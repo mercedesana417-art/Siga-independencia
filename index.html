@@ -2,115 +2,178 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SIGA PRO">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5832/5832416.png">
+
     <title>SIGA | Sistema Inteligente de Gestión Administrativa</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Estilos para que en PC se vea como Software y en Móvil como App */
         .active-tab { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; font-weight: 900; }
-        tr:nth-child(even) { background-color: #f9fafb; }
-        .status-pill { padding: 2px 8px; border-radius: 999px; font-size: 8px; text-transform: uppercase; color: white; font-weight: 900; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        .status-pill { padding: 3px 10px; border-radius: 999px; font-size: 9px; text-transform: uppercase; color: white; font-weight: 900; shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* Evita el scroll horizontal molesto en móviles */
+        body { overflow-x: hidden; touch-action: manipulation; }
+        
+        /* Diseño responsivo para tablas */
+        @media (max-width: 640px) {
+            .table-responsive { font-size: 10px; }
+            .hide-mobile { display: none; }
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans">
+<body class="bg-slate-50 text-slate-900 font-sans select-none">
 
     <div id="auth-section" class="min-h-screen flex items-center justify-center p-6 bg-blue-950">
-        <div class="bg-white w-full max-w-sm p-8 rounded-[2rem] shadow-2xl">
-            <div class="text-center mb-6">
-                <div class="bg-blue-900 text-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg">📊</div>
-                <h2 id="auth-title" class="text-2xl font-black text-blue-900 uppercase italic leading-tight">SIGA<br><span class="text-xs font-bold text-slate-400">Gestión Administrativa</span></h2>
+        <div class="bg-white w-full max-w-sm p-10 rounded-[2.5rem] shadow-2xl border-t-8 border-blue-600">
+            <div class="text-center mb-8">
+                <div class="bg-blue-900 text-white w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-2xl">🏛️</div>
+                <h2 id="auth-title" class="text-3xl font-black text-blue-950 uppercase italic tracking-tighter">SIGA V10</h2>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Gestión Independencia</p>
             </div>
             
             <div class="space-y-4">
                 <div id="reg-extra" class="hidden">
-                    <label class="text-[10px] font-black text-blue-600 uppercase ml-1">Nombre del Sector</label>
-                    <input type="text" id="sector-name" class="w-full p-3 bg-blue-50 border-2 border-blue-100 rounded-xl outline-none" placeholder="Ej: Sector Las Flores">
+                    <label class="text-[9px] font-black text-blue-700 uppercase ml-1 italic">Nombre del Sector / Institución</label>
+                    <input type="text" id="sector-name" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl outline-none focus:border-blue-500 transition-all" placeholder="Ej: Sector Centro">
                 </div>
-                <input type="text" id="user-id" class="w-full p-3 border-2 rounded-xl outline-none focus:border-blue-900" placeholder="Usuario">
-                <input type="password" id="user-pass" class="w-full p-3 border-2 rounded-xl outline-none focus:border-blue-900" placeholder="Contraseña">
-                <button onclick="procesarAcceso()" class="w-full bg-blue-900 text-white font-black py-4 rounded-xl shadow-xl hover:bg-blue-800 transition-all uppercase text-xs tracking-widest mt-2">Ingresar al Sistema</button>
+                <input type="text" id="user-id" class="w-full p-4 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 shadow-sm" placeholder="Usuario">
+                <input type="password" id="user-pass" class="w-full p-4 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 shadow-sm" placeholder="Contraseña">
+                <button onclick="procesarAcceso()" class="w-full bg-blue-900 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-blue-800 active:scale-95 transition-all uppercase text-xs tracking-widest mt-4">Entrar al Sistema</button>
             </div>
-            <button onclick="alternarModo()" id="toggle-btn" class="w-full text-blue-700 font-bold text-[10px] mt-6 underline uppercase text-center italic">Registrar Nuevo Perfil</button>
+            <button onclick="alternarModo()" id="toggle-btn" class="w-full text-blue-600 font-bold text-[10px] mt-8 underline uppercase text-center italic hover:text-blue-800">Registrar Nuevo Sector</button>
         </div>
     </div>
 
-    <div id="app-section" class="hidden min-h-screen">
-        <nav class="bg-blue-900 text-white p-4 flex justify-between items-center sticky top-0 z-50 shadow-lg">
-            <div class="leading-none">
-                <h1 class="text-xl font-black italic">SIGA</h1>
-                <p id="nav-info" class="text-[8px] font-bold text-blue-300 uppercase tracking-widest"></p>
+    <div id="app-section" class="hidden min-h-screen flex flex-col">
+        <nav class="bg-blue-900 text-white p-5 flex justify-between items-center sticky top-0 z-50 shadow-xl border-b border-blue-800">
+            <div class="flex items-center gap-3">
+                <div class="bg-white text-blue-900 font-black p-1 px-2 rounded-lg text-xs italic">SIGA</div>
+                <div class="leading-none">
+                    <p id="nav-info" class="text-[10px] font-black text-blue-200 uppercase tracking-widest"></p>
+                    <p class="text-[8px] font-bold text-white/50 uppercase">Sistema de Gestión Social</p>
+                </div>
             </div>
-            <button onclick="location.reload()" class="bg-red-500 px-3 py-1 rounded-lg text-[10px] font-bold uppercase shadow-inner hover:bg-red-600">Salir</button>
+            <button onclick="location.reload()" class="bg-red-500/20 hover:bg-red-600 border border-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all">Salir</button>
         </nav>
 
-        <main class="p-4 max-w-5xl mx-auto">
-            <div id="menu-panel">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 my-6 text-center">
-                    <div class="bg-white p-4 rounded-2xl shadow border-b-4 border-blue-900"><p class="text-[10px] font-bold text-slate-400 uppercase">Total</p><h3 id="stat-t" class="text-2xl font-black">0</h3></div>
-                    <div onclick="verLista('espera')" class="bg-white p-4 rounded-2xl shadow border-b-4 border-yellow-400 cursor-pointer hover:bg-yellow-50"><p class="text-[10px] font-bold text-yellow-600 uppercase">Espera</p><h3 id="stat-e" class="text-2xl font-black text-yellow-600">0</h3></div>
-                    <div onclick="verLista('aprobado')" class="bg-white p-4 rounded-2xl shadow border-b-4 border-emerald-500 cursor-pointer hover:bg-emerald-50"><p class="text-[10px] font-bold text-emerald-600 uppercase">Aprobados</p><h3 id="stat-a" class="text-2xl font-black text-emerald-600">0</h3></div>
-                    <div onclick="verLista('rechazado')" class="bg-white p-4 rounded-2xl shadow border-b-4 border-red-500 cursor-pointer hover:bg-red-50"><p class="text-[10px] font-bold text-red-600 uppercase">Negados</p><h3 id="stat-r" class="text-2xl font-black text-red-600">0</h3></div>
+        <main class="p-4 flex-1 max-w-6xl mx-auto w-full">
+            <div id="menu-panel" class="animate-in fade-in duration-500">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 my-6">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100"><p class="text-[10px] font-black text-slate-400 uppercase mb-1">Censo Total</p><h3 id="stat-t" class="text-3xl font-black text-blue-900">0</h3></div>
+                    <div onclick="verLista('espera')" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 border-b-4 border-yellow-400 cursor-pointer active:scale-95 transition-all"><p class="text-[10px] font-black text-yellow-600 uppercase mb-1 italic underline">En Espera</p><h3 id="stat-e" class="text-3xl font-black text-yellow-500">0</h3></div>
+                    <div onclick="verLista('aprobado')" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 border-b-4 border-emerald-500 cursor-pointer active:scale-95 transition-all"><p class="text-[10px] font-black text-emerald-600 uppercase mb-1 italic underline">Aprobados</p><h3 id="stat-a" class="text-3xl font-black text-emerald-600">0</h3></div>
+                    <div onclick="verLista('rechazado')" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 border-b-4 border-red-500 cursor-pointer active:scale-95 transition-all"><p class="text-[10px] font-black text-red-600 uppercase mb-1 italic underline">Negados</p><h3 id="stat-r" class="text-3xl font-black text-red-600">0</h3></div>
                 </div>
-                <button onclick="verForm()" class="w-full bg-blue-900 text-white font-black p-6 rounded-[2rem] shadow-2xl flex justify-between items-center px-10 active:scale-95 transition-all">
-                    <div class="text-left"><p class="text-lg italic uppercase leading-none">Nuevo Registro</p><p class="text-[9px] font-bold opacity-60">CENSO DE BENEFICIARIOS</p></div>
-                    <span class="text-3xl">📝</span>
-                </button>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <button onclick="verForm()" class="group bg-blue-900 text-white p-8 rounded-[2.5rem] shadow-2xl flex flex-col justify-between items-start hover:bg-blue-800 transition-all relative overflow-hidden">
+                        <span class="text-4xl mb-4 group-hover:scale-110 transition-transform">📝</span>
+                        <p class="text-xl font-black italic uppercase leading-none">Nuevo Registro</p>
+                        <p class="text-[10px] font-bold opacity-60 mt-2 uppercase tracking-widest text-left">Agregar beneficiario al censo actual</p>
+                    </button>
+                    
+                    <div class="bg-white p-8 rounded-[2.5rem] border-2 border-dashed border-slate-200 flex flex-col justify-center items-center text-slate-400">
+                        <p class="text-[10px] font-black uppercase tracking-widest mb-2">Base de Datos</p>
+                        <p class="text-xs italic text-center">Software optimizado para dispositivos móviles y computadoras de escritorio.</p>
+                    </div>
+                </div>
             </div>
 
-            <div id="form-panel" class="hidden py-4 max-w-xl mx-auto">
-                <button onclick="verMenu()" class="mb-4 text-blue-900 font-bold text-xs uppercase underline">← Menú Principal</button>
-                <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl border">
-                    <h2 class="text-xl font-black text-blue-900 mb-6 border-b pb-2 uppercase italic">Captura de Datos</h2>
-                    <form onsubmit="guardarRegistro(event)" class="space-y-4">
-                        <input type="text" id="in-n" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold" placeholder="Nombre y Apellido">
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="number" id="in-c" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold" placeholder="Cédula">
-                            <input type="text" id="in-t" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold" placeholder="Teléfono">
+            <div id="form-panel" class="hidden py-4 max-w-2xl mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <button onclick="verMenu()" class="text-blue-900 font-black text-xs uppercase flex items-center gap-2"><span>⬅️</span> Menú</button>
+                    <span class="text-[10px] font-black text-slate-300 uppercase italic">Formulario de Captura v10</span>
+                </div>
+                <div class="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl border border-slate-100">
+                    <h2 class="text-2xl font-black text-blue-950 mb-8 border-l-8 border-blue-900 pl-4 uppercase italic">Datos Solicitante</h2>
+                    <form onsubmit="guardarRegistro(event)" class="space-y-5">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Nombre y Apellido</label>
+                            <input type="text" id="in-n" required class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-blue-500 outline-none">
                         </div>
-                        <input type="text" id="in-a" class="w-full p-4 bg-blue-50 border rounded-2xl font-bold" placeholder="Ayuda solicitada (Ej: Silla de ruedas)">
-                        <textarea id="in-d" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold h-24" placeholder="Dirección detallada"></textarea>
-                        <button type="submit" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl shadow-lg uppercase tracking-widest text-xs">Guardar en Base de Datos</button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Cédula</label>
+                                <input type="number" id="in-c" required class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-blue-500 outline-none">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Teléfono Movil</label>
+                                <input type="text" id="in-t" required class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-blue-500 outline-none">
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-black text-blue-600 uppercase ml-2">Ayuda Técnica / Social Requerida</label>
+                            <input type="text" id="in-a" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl font-bold focus:border-blue-500 outline-none">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Dirección de Habitación</label>
+                            <textarea id="in-d" required class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold h-28 focus:border-blue-500 outline-none resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-900 text-white font-black py-5 rounded-[1.5rem] shadow-2xl uppercase tracking-widest text-sm hover:bg-blue-800 transition-all active:scale-95">Finalizar Registro ✅</button>
                     </form>
                 </div>
             </div>
 
-            <div id="list-panel" class="hidden py-4">
-                <button onclick="verMenu()" class="mb-4 text-blue-900 font-bold text-xs uppercase underline">← Menú</button>
-                <div class="flex gap-4 mb-4 border-b text-[10px] font-black uppercase overflow-x-auto px-2">
-                    <button onclick="filtrar('espera')" id="t-espera" class="pb-2 px-3">🟡 En Espera</button>
-                    <button onclick="filtrar('aprobado')" id="t-aprobado" class="pb-2 px-3">🟢 Aprobados</button>
-                    <button onclick="filtrar('rechazado')" id="t-rechazado" class="pb-2 px-3">🔴 Negados</button>
+            <div id="list-panel" class="hidden py-4 h-full">
+                <div class="flex items-center justify-between mb-4">
+                    <button onclick="verMenu()" class="text-blue-900 font-black text-xs uppercase flex items-center gap-2"><span>⬅️</span> Menú</button>
+                    <div class="flex gap-2 text-[9px] font-black uppercase">
+                        <button onclick="filtrar('espera')" id="t-espera" class="p-2 px-4 rounded-xl border border-slate-200">Espera</button>
+                        <button onclick="filtrar('aprobado')" id="t-aprobado" class="p-2 px-4 rounded-xl border border-slate-200">Aprobados</button>
+                        <button onclick="filtrar('rechazado')" id="t-rechazado" class="p-2 px-4 rounded-xl border border-slate-200">Negados</button>
+                    </div>
                 </div>
-                <div class="bg-white rounded-3xl shadow-2xl overflow-x-auto border">
-                    <table class="w-full text-left text-[11px] min-w-[700px]">
-                        <thead class="bg-slate-100 text-slate-500 uppercase font-black italic">
-                            <tr><th class="p-5">#</th><th>Beneficiario</th><th>Cédula</th><th>Teléfono</th><th>Ayuda</th><th class="text-center">Estatus</th><th class="text-center">Papelera</th></tr>
-                        </thead>
-                        <tbody id="tabla-body" class="font-bold"></tbody>
-                    </table>
+                
+                <div class="bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-[11px] min-w-[800px]">
+                            <thead class="bg-slate-50 text-slate-400 uppercase font-black italic border-b">
+                                <tr>
+                                    <th class="p-6">#</th>
+                                    <th>Beneficiario</th>
+                                    <th>Cédula</th>
+                                    <th>Teléfono</th>
+                                    <th>Ayuda</th>
+                                    <th class="text-center">Estatus Final</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-body" class="font-bold text-slate-700"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        let esModoLogin = true, dbUsers = JSON.parse(localStorage.getItem('siga_v9_u')) || [], dbData = JSON.parse(localStorage.getItem('siga_v9_d')) || [], sesion = null, filtro = 'espera';
+        // LÓGICA DEL SISTEMA
+        let esModoLogin = true, dbUsers = JSON.parse(localStorage.getItem('siga_v10_u')) || [], dbData = JSON.parse(localStorage.getItem('siga_v10_d')) || [], sesion = null, filtro = 'espera';
 
-        function alternarModo() { esModoLogin = !esModoLogin; document.getElementById('auth-title').innerHTML = esModoLogin ? "Entrada SIGA" : "Nuevo Perfil"; document.getElementById('reg-extra').classList.toggle('hidden'); document.getElementById('toggle-btn').innerText = esModoLogin ? "Registrar Nuevo Perfil" : "Ya tengo cuenta"; }
+        function alternarModo() { esModoLogin = !esModoLogin; document.getElementById('auth-title').innerHTML = esModoLogin ? "SIGA V10" : "Nuevo Perfil"; document.getElementById('reg-extra').classList.toggle('hidden'); document.getElementById('toggle-btn').innerText = esModoLogin ? "Registrar Nuevo Perfil" : "Ya tengo cuenta, entrar"; }
 
         function procesarAcceso() {
             const u = document.getElementById('user-id').value.trim().toLowerCase(), p = document.getElementById('user-pass').value.trim(), s = document.getElementById('sector-name').value.trim();
             if (esModoLogin) {
                 const user = dbUsers.find(x => x.u === u && x.p === p);
-                if (user) { sesion = user; iniciarApp(); } else alert("Credenciales incorrectas");
+                if (user) { sesion = user; iniciarApp(); } else alert("❌ Usuario o Contraseña Inválida");
             } else {
                 if (u && p && s) {
-                    if(dbUsers.find(x => x.u === u)) return alert("Usuario ocupado");
-                    dbUsers.push({ u, p, s }); localStorage.setItem('siga_v9_u', JSON.stringify(dbUsers)); alert("Perfil creado con éxito"); alternarModo();
-                } else alert("Faltan datos por completar");
+                    if(dbUsers.find(x => x.u === u)) return alert("El nombre de usuario ya está en uso");
+                    dbUsers.push({ u, p, s }); localStorage.setItem('siga_v10_u', JSON.stringify(dbUsers)); alert("✅ Sector registrado correctamente"); alternarModo();
+                } else alert("Por favor complete todos los campos");
             }
         }
 
-        function iniciarApp() { document.getElementById('auth-section').classList.add('hidden'); document.getElementById('app-section').classList.remove('hidden'); document.getElementById('nav-info').innerText = `SECTOR: ${sesion.s}`; verMenu(); }
+        function iniciarApp() { document.getElementById('auth-section').classList.add('hidden'); document.getElementById('app-section').classList.remove('hidden'); document.getElementById('nav-info').innerText = sesion.s; verMenu(); }
         function verMenu() { ocultarP(); document.getElementById('menu-panel').classList.remove('hidden'); stats(); }
         function verForm() { ocultarP(); document.getElementById('form-panel').classList.remove('hidden'); }
         function verLista(f) { ocultarP(); document.getElementById('list-panel').classList.remove('hidden'); filtrar(f); }
@@ -127,55 +190,53 @@
         function guardarRegistro(e) {
             e.preventDefault();
             dbData.unshift({ id: Date.now(), owner: sesion.u, n: document.getElementById('in-n').value.toUpperCase(), c: document.getElementById('in-c').value, t: document.getElementById('in-t').value, d: document.getElementById('in-d').value, a: document.getElementById('in-a').value || "General", e: 'espera' });
-            localStorage.setItem('siga_v9_d', JSON.stringify(dbData));
-            alert("✅ Registro guardado"); e.target.reset(); verLista('espera');
+            localStorage.setItem('siga_v10_d', JSON.stringify(dbData));
+            alert("✅ Registro guardado exitosamente"); e.target.reset(); verLista('espera');
         }
 
         function establecerEstatus(id, nuevoE) {
-            if(!confirm("¿Desea marcar este estatus como DEFINITIVO? No podrá revertirse.")) return;
+            if(!confirm("¿CONFIRMAR ESTATUS DEFINITIVO? Esta acción bloqueará el registro.")) return;
             const i = dbData.findIndex(x => x.id === id);
             dbData[i].e = nuevoE;
-            localStorage.setItem('siga_v9_d', JSON.stringify(dbData));
+            localStorage.setItem('siga_v10_d', JSON.stringify(dbData));
             filtrar(filtro);
         }
 
         function eliminarRegistro(id) {
-            if(!confirm("⚠️ ¿ESTÁ SEGURO? Esta acción eliminará a la persona del sistema permanentemente.")) return;
+            if(!confirm("⚠️ ¿ELIMINAR PERMANENTEMENTE?")) return;
             dbData = dbData.filter(x => x.id !== id);
-            localStorage.setItem('siga_v9_d', JSON.stringify(dbData));
+            localStorage.setItem('siga_v10_d', JSON.stringify(dbData));
             filtrar(filtro);
         }
 
         function filtrar(s) {
             filtro = s;
-            ['espera', 'aprobado', 'rechazado'].forEach(x => document.getElementById('t-'+x).className = "pb-2 px-3");
-            document.getElementById('t-'+s).classList.add('active-tab');
+            ['espera', 'aprobado', 'rechazado'].forEach(x => {
+                document.getElementById('t-'+x).className = "p-2 px-4 rounded-xl border border-slate-200 transition-all";
+                if(x === s) document.getElementById('t-'+x).className += " bg-blue-900 text-white border-blue-900";
+            });
             const tbody = document.getElementById('tabla-body'), filtrados = dbData.filter(x => x.owner === sesion.u && x.e === s);
             
             tbody.innerHTML = filtrados.map((r, i) => {
                 let statusUI = r.e === 'espera' ? 
-                    `<div class="flex gap-2 justify-center">
-                        <button onclick="establecerEstatus(${r.id}, 'aprobado')" title="Aprobar" class="w-5 h-5 rounded-full bg-green-500 border-2 border-white shadow hover:scale-110"></button>
-                        <button onclick="establecerEstatus(${r.id}, 'rechazado')" title="Negar" class="w-5 h-5 rounded-full bg-red-600 border-2 border-white shadow hover:scale-110"></button>
+                    `<div class="flex gap-3 justify-center">
+                        <button onclick="establecerEstatus(${r.id}, 'aprobado')" title="Aprobar" class="w-6 h-6 rounded-full bg-green-500 border-4 border-white shadow-lg hover:scale-125 transition-transform"></button>
+                        <button onclick="establecerEstatus(${r.id}, 'rechazado')" title="Negar" class="w-6 h-6 rounded-full bg-red-600 border-4 border-white shadow-lg hover:scale-125 transition-transform"></button>
                     </div>` : 
-                    `<div class="text-center"><span class="status-pill ${r.e === 'aprobado' ? 'bg-green-600' : 'bg-red-700'}">${r.e === 'aprobado' ? 'APROBADO' : 'NEGADO'}</span></div>`;
+                    `<div class="text-center"><span class="status-pill ${r.e === 'aprobado' ? 'bg-emerald-600' : 'bg-red-700'}">${r.e === 'aprobado' ? '✅ Aprobado' : '❌ Negado'}</span></div>`;
 
-                return `<tr class="border-b hover:bg-slate-50 transition-colors">
-                    <td class="p-5 text-blue-900">${i + 1}</td>
-                    <td><p class="leading-none text-blue-950">${r.n}</p><p class="text-[8px] text-slate-400 italic font-normal truncate max-w-[120px] mt-1">${r.d}</p></td>
-                    <td>${r.c}</td><td class="text-blue-600">${r.t}</td>
-                    <td><span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[8px] uppercase">${r.a}</span></td>
-                    <td class="p-5">${statusUI}</td>
-                    <td class="p-5 text-center">
-                        <button onclick="eliminarRegistro(${r.id})" class="text-slate-300 hover:text-red-500 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
+                return `<tr class="border-b border-slate-50 hover:bg-blue-50/50 transition-colors animate-in slide-in-from-right duration-300">
+                    <td class="p-6 text-blue-900 italic font-black">${i + 1}</td>
+                    <td><p class="text-blue-950 font-black">${r.n}</p><p class="text-[8px] text-slate-400 font-normal truncate max-w-[150px] uppercase mt-0.5">${r.d}</p></td>
+                    <td>${r.c}</td><td class="text-blue-600 font-black">${r.t}</td>
+                    <td><span class="bg-blue-50 text-blue-800 px-2 py-1 rounded-lg text-[8px] uppercase border border-blue-100">${r.a}</span></td>
+                    <td class="p-4">${statusUI}</td>
+                    <td class="p-4 text-center">
+                        <button onclick="eliminarRegistro(${r.id})" class="text-slate-200 hover:text-red-500 transition-colors">🗑️</button>
                     </td>
                 </tr>`;
             }).join('');
-            if(!filtrados.length) tbody.innerHTML = `<tr><td colspan="7" class="p-20 text-center text-slate-300 italic font-bold">No hay registros para mostrar en esta lista</td></tr>`;
+            if(!filtrados.length) tbody.innerHTML = `<tr><td colspan="7" class="p-20 text-center text-slate-300 italic font-black text-xs uppercase tracking-widest">Sin información registrada</td></tr>`;
         }
     </script>
 </body>
