@@ -3,90 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGA | Gestión Social Independencia</title>
+    <title>SIGA | Gestión Independencia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .tab-active { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; opacity: 1 !important; }
-        tr:nth-child(even) { background-color: #f8fafc; }
+        .active-tab { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; font-weight: 900; }
+        .bg-card { background: white; border-radius: 1.5rem; border: 1px solid #e2e8f0; }
     </style>
 </head>
-<body class="bg-slate-900 font-sans text-slate-900 transition-all duration-500">
+<body class="bg-slate-50 text-slate-900 font-sans">
 
-    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div id="auth-section" class="min-h-screen flex items-center justify-center p-6 bg-blue-950">
         <div class="bg-white w-full max-w-sm p-8 rounded-[2rem] shadow-2xl">
-            <h2 class="text-2xl font-black text-blue-900 text-center mb-6">SIGA V6 PRO</h2>
-            <div class="space-y-3">
-                <div id="f-nom" class="hidden"><input type="text" id="reg-n" class="w-full p-3 bg-slate-50 border rounded-xl" placeholder="Nombre Sector"></div>
-                <input type="text" id="a-u" class="w-full p-3 bg-slate-50 border rounded-xl" placeholder="Usuario">
-                <input type="password" id="a-p" class="w-full p-3 bg-slate-50 border rounded-xl" placeholder="Clave">
-                <button onclick="hAuth()" class="w-full bg-blue-900 text-white font-bold py-3 rounded-xl uppercase text-xs">Entrar</button>
+            <div class="text-center mb-6">
+                <div class="bg-blue-900 text-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg">📊</div>
+                <h2 id="auth-title" class="text-2xl font-black text-blue-900 uppercase italic">Entrada SIGA</h2>
             </div>
-            <button onclick="tAuth()" id="t-b" class="w-full text-blue-700 font-bold text-[10px] mt-4 underline italic uppercase">Crear Perfil Nuevo</button>
+            
+            <div class="space-y-4">
+                <div id="reg-extra" class="hidden animate-pulse">
+                    <label class="text-[10px] font-black text-blue-600 uppercase ml-1">Nombre de tu Sector/Institución</label>
+                    <input type="text" id="sector-name" class="w-full p-3 bg-blue-50 border-2 border-blue-100 rounded-xl outline-none" placeholder="Ej: Sector Centro">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Usuario</label>
+                    <input type="text" id="user-id" class="w-full p-3 border-2 rounded-xl outline-none focus:border-blue-900" placeholder="Nombre de usuario">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Contraseña</label>
+                    <input type="password" id="user-pass" class="w-full p-3 border-2 rounded-xl outline-none focus:border-blue-900" placeholder="••••••••">
+                </div>
+                
+                <button onclick="procesarAcceso()" class="w-full bg-blue-900 text-white font-black py-4 rounded-xl shadow-xl hover:bg-blue-800 transition-all uppercase text-xs tracking-widest mt-2">Acceder al Sistema</button>
+            </div>
+
+            <button onclick="alternarModo()" id="toggle-btn" class="w-full text-blue-700 font-bold text-[10px] mt-6 underline uppercase text-center tracking-tighter italic">¿No tienes cuenta? Regístrate aquí</button>
         </div>
     </div>
 
-    <div id="app" class="hidden min-h-screen bg-white">
-        <nav class="bg-blue-900 text-white p-4 flex justify-between items-center shadow-lg">
-            <h1 class="font-black italic">SIGA PRO</h1>
-            <button onclick="location.reload()" class="text-[10px] bg-red-600 px-3 py-1 rounded-lg font-bold">SALIR</button>
+    <div id="app-section" class="hidden min-h-screen">
+        <nav class="bg-blue-900 text-white p-4 flex justify-between items-center sticky top-0 z-50">
+            <div class="leading-none">
+                <h1 class="text-xl font-black italic">SIGA PRO</h1>
+                <p id="nav-info" class="text-[9px] font-bold text-blue-300 uppercase"></p>
+            </div>
+            <button onclick="location.reload()" class="bg-red-500 px-3 py-1 rounded-lg text-[10px] font-bold uppercase shadow-inner">Salir</button>
         </nav>
 
-        <div id="p-main" class="p-4 max-w-4xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6 text-center">
-                <div class="bg-blue-50 p-3 rounded-xl border-b-4 border-blue-900"><p class="text-[9px] font-black uppercase">Censo</p><h3 id="s-t" class="text-xl font-bold">0</h3></div>
-                <div onclick="sTab('list','espera')" class="bg-yellow-50 p-3 rounded-xl border-b-4 border-yellow-400 cursor-pointer"><p class="text-[9px] font-black uppercase">Espera</p><h3 id="s-e" class="text-xl font-bold">0</h3></div>
-                <div onclick="sTab('list','aprobado')" class="bg-green-50 p-3 rounded-xl border-b-4 border-green-600 cursor-pointer"><p class="text-[9px] font-black uppercase">Aprobados</p><h3 id="s-a" class="text-xl font-bold">0</h3></div>
-                <div onclick="sTab('list','rechazado')" class="bg-red-50 p-3 rounded-xl border-b-4 border-red-600 cursor-pointer"><p class="text-[9px] font-black uppercase">Negados</p><h3 id="s-r" class="text-xl font-bold">0</h3></div>
-            </div>
-            <button onclick="sTab('reg')" class="w-full bg-blue-900 text-white font-black p-5 rounded-2xl shadow-lg flex justify-between items-center"><span>NUEVO CENSO</span><span>➕</span></button>
-        </div>
+        <main class="p-4 max-w-5xl mx-auto">
+            <div id="menu-panel">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 my-6 text-center">
+                    <div class="bg-card p-4 border-b-4 border-blue-900"><p class="text-[10px] font-bold text-slate-400 uppercase">Total Censo</p><h3 id="stat-t" class="text-2xl font-black">0</h3></div>
+                    <div onclick="verLista('espera')" class="bg-card p-4 border-b-4 border-yellow-400 cursor-pointer hover:bg-yellow-50"><p class="text-[10px] font-bold text-yellow-600 uppercase">Espera</p><h3 id="stat-e" class="text-2xl font-black text-yellow-600">0</h3></div>
+                    <div onclick="verLista('aprobado')" class="bg-card p-4 border-b-4 border-emerald-500 cursor-pointer hover:bg-emerald-50"><p class="text-[10px] font-bold text-emerald-600 uppercase">Aprobados</p><h3 id="stat-a" class="text-2xl font-black text-emerald-600">0</h3></div>
+                    <div onclick="verLista('rechazado')" class="bg-card p-4 border-b-4 border-red-500 cursor-pointer hover:bg-red-50"><p class="text-[10px] font-bold text-red-600 uppercase">Negados</p><h3 id="stat-r" class="text-2xl font-black text-red-600">0</h3></div>
+                </div>
 
-        <div id="p-reg" class="hidden p-6 max-w-xl mx-auto">
-            <button onclick="sTab('main')" class="mb-4 text-blue-900 font-bold text-xs uppercase underline">← Menú</button>
-            <form onsubmit="sData(event)" class="space-y-3 bg-slate-50 p-6 rounded-3xl shadow-inner border">
-                <input type="text" id="rn" required class="w-full p-3 border rounded-xl" placeholder="Nombre completo">
-                <input type="number" id="rc" required class="w-full p-3 border rounded-xl" placeholder="Cédula">
-                <input type="tel" id="rt" required class="w-full p-3 border rounded-xl" placeholder="Teléfono">
-                <input type="text" id="ra" class="w-full p-3 border rounded-xl" placeholder="Ayuda solicitada">
-                <textarea id="rd" required class="w-full p-3 border rounded-xl h-20" placeholder="Dirección exacta"></textarea>
-                <button type="submit" class="w-full bg-blue-900 text-white font-bold py-4 rounded-xl uppercase">Guardar Registro</button>
-            </form>
-        </div>
+                <button onclick="verForm()" class="w-full bg-blue-900 text-white font-black p-6 rounded-[2rem] shadow-2xl flex justify-between items-center px-10 active:scale-95 transition-all">
+                    <div class="text-left"><p class="text-lg italic uppercase leading-none">Añadir Persona</p><p class="text-[9px] opacity-70 font-bold uppercase tracking-widest mt-1">Nuevo registro al censo</p></div>
+                    <span class="text-3xl">➕</span>
+                </button>
+            </div>
 
-        <div id="p-list" class="hidden p-4 max-w-6xl mx-auto">
-            <button onclick="sTab('main')" class="mb-4 text-blue-900 font-bold text-xs uppercase">← Menú</button>
-            <div class="flex gap-4 mb-4 border-b text-[10px] font-black uppercase overflow-x-auto">
-                <button onclick="fBy('espera')" id="bf-espera" class="pb-2 px-2 opacity-40">🟡 Espera</button>
-                <button onclick="fBy('aprobado')" id="bf-aprobado" class="pb-2 px-2 opacity-40">🟢 Aprobados</button>
-                <button onclick="fBy('rechazado')" id="bf-rechazado" class="pb-2 px-2 opacity-40">🔴 Negados</button>
+            <div id="form-panel" class="hidden py-4 max-w-xl mx-auto">
+                <button onclick="verMenu()" class="mb-4 text-blue-900 font-bold text-xs uppercase underline">← Menú Principal</button>
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl border">
+                    <h2 class="text-xl font-black text-blue-900 mb-6 border-b pb-2 italic uppercase">Datos de Solicitud</h2>
+                    <form onsubmit="guardarRegistro(event)" class="space-y-4">
+                        <input type="text" id="in-n" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold" placeholder="Nombre completo">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" id="in-c" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold" placeholder="Cédula">
+                            <input type="text" id="in-t" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold" placeholder="Teléfono">
+                        </div>
+                        <input type="text" id="in-a" class="w-full p-4 bg-blue-50 border rounded-2xl font-bold" placeholder="Ayuda técnica o social">
+                        <textarea id="in-d" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold h-24" placeholder="Dirección de habitación"></textarea>
+                        <button type="submit" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl shadow-lg uppercase text-xs tracking-widest">Registrar en Base de Datos</button>
+                    </form>
+                </div>
             </div>
-            <div class="overflow-x-auto bg-white rounded-xl shadow-xl border">
-                <table class="w-full text-left text-[10px] border-collapse">
-                    <thead class="bg-slate-100 uppercase italic">
-                        <tr><th class="p-3">#</th><th>Nombre</th><th>CI</th><th>Teléfono</th><th>Dirección</th><th>Ayuda</th><th class="text-center">Estatus</th></tr>
-                    </thead>
-                    <tbody id="e-body" class="font-medium"></tbody>
-                </table>
+
+            <div id="list-panel" class="hidden py-4">
+                <button onclick="verMenu()" class="mb-4 text-blue-900 font-bold text-xs uppercase underline">← Menú Principal</button>
+                
+                <div class="flex gap-4 mb-4 border-b text-[10px] font-black uppercase overflow-x-auto px-2">
+                    <button onclick="filtrar('espera')" id="t-espera" class="pb-2 px-3">🟡 Lista Espera</button>
+                    <button onclick="filtrar('aprobado')" id="t-aprobado" class="pb-2 px-3">🟢 Lista Aprobados</button>
+                    <button onclick="filtrar('rechazado')" id="t-rechazado" class="pb-2 px-3">🔴 Lista Negados</button>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-2xl overflow-x-auto border">
+                    <table class="w-full text-left text-[11px]">
+                        <thead class="bg-slate-100 text-slate-500 uppercase font-black italic">
+                            <tr><th class="p-5">#</th><th>Nombre</th><th>CI</th><th>Teléfono</th><th>Dirección</th><th>Ayuda</th><th class="text-center">Cambiar Estatus</th></tr>
+                        </thead>
+                        <tbody id="tabla-body" class="font-bold"></tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        let isL = true, uDB = JSON.parse(localStorage.getItem('s_v6_u'))||[], rDB = JSON.parse(localStorage.getItem('s_v6_r'))||[], cU = null, cF = 'espera';
-        function tAuth(){ isL = !isL; document.getElementById('f-nom').classList.toggle('hidden'); document.getElementById('t-b').innerText = isL ? "Crear Perfil Nuevo" : "Ya tengo cuenta"; }
-        function hAuth(){
-            const u = document.getElementById('a-u').value.trim(), p = document.getElementById('a-p').value.trim(), n = document.getElementById('reg-n').value.trim();
-            if(isL){ const f = uDB.find(x => x.u === u && x.p === p); if(f){ cU = f; eApp(); } else alert("Error"); }
-            else { if(u&&p&&n){ uDB.push({u,p,name:n}); localStorage.setItem('s_v6_u', JSON.stringify(uDB)); alert("Creado"); tAuth(); } }
+        let esModoLogin = true;
+        let dbUsers = JSON.parse(localStorage.getItem('siga_v7_users')) || [];
+        let dbData = JSON.parse(localStorage.getItem('siga_v7_data')) || [];
+        let sesion = null;
+        let filtro = 'espera';
+
+        function alternarModo() {
+            esModoLogin = !esModoLogin;
+            document.getElementById('auth-title').innerText = esModoLogin ? "Entrada SIGA" : "Registro de Sector";
+            document.getElementById('reg-extra').classList.toggle('hidden');
+            document.getElementById('toggle-btn').innerText = esModoLogin ? "¿No tienes cuenta? Regístrate aquí" : "Ya tengo cuenta, entrar";
         }
-        function eApp(){ document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); document.body.className="bg-white"; uSt(); }
-        function sTab(t, f = 'espera'){ ['p-main','p-reg','p-list'].forEach(x => document.getElementById(x).classList.add('hidden')); document.getElementById('p-'+t).classList.remove('hidden'); if(t==='list') fBy(f); if(t==='main') uSt(); }
-        function uSt(){ const m = rDB.filter(r => r.s === cU.u); document.getElementById('s-t').innerText = m.length; document.getElementById('s-e').innerText = m.filter(r => r.e === 'espera').length; document.getElementById('s-a').innerText = m.filter(r => r.e === 'aprobado').length; document.getElementById('s-r').innerText = m.filter(r => r.e === 'rechazado').length; }
-        function sData(e){ e.preventDefault(); rDB.unshift({id:Date.now(),s:cU.u,n:document.getElementById('rn').value.toUpperCase(),c:document.getElementById('rc').value,t:document.getElementById('rt').value,d:document.getElementById('rd').value,a:document.getElementById('ra').value||"Gral",e:'espera'}); localStorage.setItem('s_v6_r', JSON.stringify(rDB)); alert("Guardado"); e.target.reset(); sTab('list','espera'); }
-        function cSt(id, s){ const i = rDB.findIndex(r => r.id === id); rDB[i].e = s; localStorage.setItem('s_v6_r', JSON.stringify(rDB)); fBy(cF); }
-        function fBy(s){ cF = s; ['espera','aprobado','rechazado'].forEach(x => document.getElementById('bf-'+x).className = "pb-2 px-2 opacity-40"); document.getElementById('bf-'+s).classList.add('tab-active'); const b = document.getElementById('e-body'), f = rDB.filter(r => r.s === cU.u && r.e === s);
-            b.innerHTML = f.map((r, i) => `<tr class="border-b"><td class="p-3 text-blue-900">${i+1}</td><td>${r.n}</td><td>${r.c}</td><td>${r.t}</td><td class="max-w-[100px] truncate">${r.d}</td><td>${r.a}</td><td class="flex gap-1 justify-center p-2"><button onclick="cSt(${r.id},'espera')" class="w-4 h-4 rounded-full bg-yellow-400"></button><button onclick="cSt(${r.id},'aprobado')" class="w-4 h-4 rounded-full bg-green-500"></button><button onclick="cSt(${r.id},'rechazado')" class="w-4 h-4 rounded-full bg-red-600"></button></td></tr>`).join('');
-            if(!f.length) b.innerHTML = `<tr><td colspan="7" class="p-10 text-center opacity-30 italic font-bold">Sin registros</td></tr>`;
+
+        function procesarAcceso() {
+            const u = document.getElementById('user-id').value.trim().toLowerCase();
+            const p = document.getElementById('user-pass').value.trim();
+            const s = document.getElementById('sector-name').value.trim();
+
+            if (esModoLogin) {
+                const user = dbUsers.find(x => x.u === u && x.p === p);
+                if (user) { sesion = user; iniciarApp(); } else { alert("Usuario o clave incorrecta"); }
+            } else {
+                if (u && p && s) {
+                    if(dbUsers.find(x => x.u === u)) return alert("El usuario ya existe");
+                    dbUsers.push({ u, p, s });
+                    localStorage.setItem('siga_v7_users', JSON.stringify(dbUsers));
+                    alert("¡Sector registrado! Ahora ingresa.");
+                    alternarModo();
+                } else { alert("Faltan datos"); }
+            }
+        }
+
+        function iniciarApp() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('app-section').classList.remove('hidden');
+            document.getElementById('nav-info').innerText = `Sector: ${sesion.s}`;
+            verMenu();
+        }
+
+        function verMenu() { ocultarP(); document.getElementById('menu-panel').classList.remove('hidden'); stats(); }
+        function verForm() { ocultarP(); document.getElementById('form-panel').classList.remove('hidden'); }
+        function verLista(f) { ocultarP(); document.getElementById('list-panel').classList.remove('hidden'); filtrar(f); }
+
+        function ocultarP() { ['menu-panel', 'form-panel', 'list-panel'].forEach(id => document.getElementById(id).classList.add('hidden')); }
+
+        function stats() {
+            // FILTRO CRÍTICO: Solo datos que pertenecen al usuario logueado
+            const m = dbData.filter(x => x.owner === sesion.u);
+            document.getElementById('stat-t').innerText = m.length;
+            document.getElementById('stat-e').innerText = m.filter(x => x.e === 'espera').length;
+            document.getElementById('stat-a').innerText = m.filter(x => x.e === 'aprobado').length;
+            document.getElementById('stat-r').innerText = m.filter(x => x.e === 'rechazado').length;
+        }
+
+        function guardarRegistro(e) {
+            e.preventDefault();
+            const nuevo = {
+                id: Date.now(),
+                owner: sesion.u, // Vincula el registro al usuario actual
+                n: document.getElementById('in-n').value.toUpperCase(),
+                c: document.getElementById('in-c').value,
+                t: document.getElementById('in-t').value,
+                d: document.getElementById('in-d').value,
+                a: document.getElementById('in-a').value || "Gral",
+                e: 'espera'
+            };
+            dbData.unshift(nuevo);
+            localStorage.setItem('siga_v7_data', JSON.stringify(dbData));
+            alert("Guardado con éxito");
+            e.target.reset();
+            verLista('espera');
+        }
+
+        function cambiarE(id, e) {
+            const i = dbData.findIndex(x => x.id === id);
+            dbData[i].e = e;
+            localStorage.setItem('siga_v7_data', JSON.stringify(dbData));
+            filtrar(filtro);
+        }
+
+        function filtrar(s) {
+            filtro = s;
+            ['espera', 'aprobado', 'rechazado'].forEach(x => document.getElementById('t-'+x).className = "pb-2 px-3");
+            document.getElementById('t-'+s).classList.add('active-tab');
+
+            const tbody = document.getElementById('tabla-body');
+            // FILTRO CRÍTICO: Solo datos del dueño actual y del estatus elegido
+            const filtrados = dbData.filter(x => x.owner === sesion.u && x.e === s);
+            
+            tbody.innerHTML = filtrados.map((r, i) => `
+                <tr class="border-b hover:bg-slate-50 transition-colors">
+                    <td class="p-5 text-blue-900">${i + 1}</td>
+                    <td>${r.n}</td>
+                    <td>${r.c}</td>
+                    <td class="text-blue-600">${r.t}</td>
+                    <td class="max-w-[120px] truncate italic text-slate-400" title="${r.d}">${r.d}</td>
+                    <td><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-[9px] uppercase">${r.a}</span></td>
+                    <td class="p-5">
+                        <div class="flex gap-2 justify-center">
+                            <button onclick="cambiarE(${r.id}, 'espera')" class="w-5 h-5 rounded-full bg-yellow-400 border-2 border-white shadow"></button>
+                            <button onclick="cambiarE(${r.id}, 'aprobado')" class="w-5 h-5 rounded-full bg-green-500 border-2 border-white shadow"></button>
+                            <button onclick="cambiarE(${r.id}, 'rechazado')" class="w-5 h-5 rounded-full bg-red-600 border-2 border-white shadow"></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            if(!filtrados.length) tbody.innerHTML = `<tr><td colspan="7" class="p-20 text-center text-slate-300 italic">No hay registros</td></tr>`;
         }
     </script>
 </body>
