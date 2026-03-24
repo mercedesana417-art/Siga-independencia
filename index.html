@@ -3,150 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <meta name="theme-color" content="#1e3a8a">
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SIGA PRO">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5832/5832416.png">
-
-    <title>SIGA | Sistema Inteligente de Gestión Administrativa</title>
-    
+    <title>SIGA PRO | Gestión Administrativa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos para que en PC se vea como Software y en Móvil como App */
-        .active-tab { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; font-weight: 900; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .active-tab { background: #1e3a8a; color: white; border-radius: 12px; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); }
         tr:nth-child(even) { background-color: #f8fafc; }
-        .status-pill { padding: 3px 10px; border-radius: 999px; font-size: 9px; text-transform: uppercase; color: white; font-weight: 900; shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
-        /* Evita el scroll horizontal molesto en móviles */
-        body { overflow-x: hidden; touch-action: manipulation; }
-        
-        /* Diseño responsivo para tablas */
-        @media (max-width: 640px) {
-            .table-responsive { font-size: 10px; }
-            .hide-mobile { display: none; }
-        }
+        input:focus { border-color: #1e3a8a !important; ring: 2px #1e3a8a; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans select-none">
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
 
-    <div id="auth-section" class="min-h-screen flex items-center justify-center p-6 bg-blue-950">
-        <div class="bg-white w-full max-w-sm p-10 rounded-[2.5rem] shadow-2xl border-t-8 border-blue-600">
-            <div class="text-center mb-8">
-                <div class="bg-blue-900 text-white w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-2xl">🏛️</div>
-                <h2 id="auth-title" class="text-3xl font-black text-blue-950 uppercase italic tracking-tighter">SIGA V10</h2>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Gestión Independencia</p>
+    <div id="auth-section" class="min-h-screen flex items-center justify-center p-4 bg-slate-900 relative">
+        <div class="bg-white w-full max-w-md p-8 rounded-[2.5rem] card-shadow z-10 border-t-4 border-blue-600">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-900 text-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-xl text-3xl font-black italic">S</div>
+                <h1 id="auth-title" class="text-3xl font-black text-slate-900 italic uppercase">SIGA <span class="text-blue-700">V11</span></h1>
+                <p id="auth-subtitle" class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Inteligencia Administrativa</p>
             </div>
-            
-            <div class="space-y-4">
-                <div id="reg-extra" class="hidden">
-                    <label class="text-[9px] font-black text-blue-700 uppercase ml-1 italic">Nombre del Sector / Institución</label>
-                    <input type="text" id="sector-name" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl outline-none focus:border-blue-500 transition-all" placeholder="Ej: Sector Centro">
+
+            <div id="auth-fields" class="space-y-4">
+                <div id="reg-fields" class="hidden animate-in fade-in duration-300">
+                    <input type="text" id="reg-sector" class="w-full p-4 bg-slate-50 border-2 rounded-2xl outline-none" placeholder="Nombre del Sector">
+                    <input type="text" id="reg-phone" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl outline-none mt-2" placeholder="Teléfono de Recuperación">
                 </div>
-                <input type="text" id="user-id" class="w-full p-4 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 shadow-sm" placeholder="Usuario">
-                <input type="password" id="user-pass" class="w-full p-4 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 shadow-sm" placeholder="Contraseña">
-                <button onclick="procesarAcceso()" class="w-full bg-blue-900 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-blue-800 active:scale-95 transition-all uppercase text-xs tracking-widest mt-4">Entrar al Sistema</button>
+                
+                <div id="recovery-fields" class="hidden animate-in fade-in duration-300">
+                    <p class="text-[10px] text-center text-slate-500 mb-2 uppercase font-bold">Ingresa tu teléfono para recuperar acceso</p>
+                    <input type="text" id="rec-phone-input" class="w-full p-4 bg-green-50 border-2 border-green-100 rounded-2xl outline-none" placeholder="Teléfono Registrado">
+                </div>
+
+                <div id="standard-fields">
+                    <input type="text" id="user-id" class="w-full p-4 border-2 rounded-2xl outline-none mb-3" placeholder="Usuario">
+                    <input type="password" id="user-pass" class="w-full p-4 border-2 rounded-2xl outline-none" placeholder="Contraseña">
+                </div>
+
+                <button onclick="handleAuth()" class="w-full bg-blue-900 text-white font-black py-5 rounded-2xl shadow-lg hover:bg-blue-800 transition-all uppercase text-xs tracking-widest mt-2">Continuar</button>
             </div>
-            <button onclick="alternarModo()" id="toggle-btn" class="w-full text-blue-600 font-bold text-[10px] mt-8 underline uppercase text-center italic hover:text-blue-800">Registrar Nuevo Sector</button>
+
+            <div class="flex justify-between mt-6 px-2">
+                <button onclick="toggleMode('reg')" id="btn-mode" class="text-[10px] font-bold text-blue-600 uppercase underline">Crear Cuenta</button>
+                <button onclick="toggleMode('rec')" id="btn-rec" class="text-[10px] font-bold text-slate-400 uppercase underline">Olvidé mi clave</button>
+            </div>
         </div>
     </div>
 
-    <div id="app-section" class="hidden min-h-screen flex flex-col">
-        <nav class="bg-blue-900 text-white p-5 flex justify-between items-center sticky top-0 z-50 shadow-xl border-b border-blue-800">
-            <div class="flex items-center gap-3">
-                <div class="bg-white text-blue-900 font-black p-1 px-2 rounded-lg text-xs italic">SIGA</div>
-                <div class="leading-none">
-                    <p id="nav-info" class="text-[10px] font-black text-blue-200 uppercase tracking-widest"></p>
-                    <p class="text-[8px] font-bold text-white/50 uppercase">Sistema de Gestión Social</p>
+    <div id="app-section" class="hidden min-h-screen pb-20 md:pb-0">
+        <nav class="bg-white border-b p-4 flex justify-between items-center sticky top-0 z-50 glass card-shadow">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-900 text-white p-1 px-3 rounded-lg font-black italic text-sm">SIGA</div>
+                <div>
+                    <h2 id="nav-sector" class="text-xs font-black text-slate-800 uppercase leading-none"></h2>
+                    <p class="text-[8px] font-bold text-blue-600 uppercase tracking-tighter">Sesión Protegida</p>
                 </div>
             </div>
-            <button onclick="location.reload()" class="bg-red-500/20 hover:bg-red-600 border border-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all">Salir</button>
+            <button onclick="location.reload()" class="bg-slate-100 p-2 px-4 rounded-xl text-[9px] font-black uppercase text-red-600 border border-red-100">Salir</button>
         </nav>
 
-        <main class="p-4 flex-1 max-w-6xl mx-auto w-full">
-            <div id="menu-panel" class="animate-in fade-in duration-500">
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 my-6">
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100"><p class="text-[10px] font-black text-slate-400 uppercase mb-1">Censo Total</p><h3 id="stat-t" class="text-3xl font-black text-blue-900">0</h3></div>
-                    <div onclick="verLista('espera')" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 border-b-4 border-yellow-400 cursor-pointer active:scale-95 transition-all"><p class="text-[10px] font-black text-yellow-600 uppercase mb-1 italic underline">En Espera</p><h3 id="stat-e" class="text-3xl font-black text-yellow-500">0</h3></div>
-                    <div onclick="verLista('aprobado')" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 border-b-4 border-emerald-500 cursor-pointer active:scale-95 transition-all"><p class="text-[10px] font-black text-emerald-600 uppercase mb-1 italic underline">Aprobados</p><h3 id="stat-a" class="text-3xl font-black text-emerald-600">0</h3></div>
-                    <div onclick="verLista('rechazado')" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 border-b-4 border-red-500 cursor-pointer active:scale-95 transition-all"><p class="text-[10px] font-black text-red-600 uppercase mb-1 italic underline">Negados</p><h3 id="stat-r" class="text-3xl font-black text-red-600">0</h3></div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-4">
-                    <button onclick="verForm()" class="group bg-blue-900 text-white p-8 rounded-[2.5rem] shadow-2xl flex flex-col justify-between items-start hover:bg-blue-800 transition-all relative overflow-hidden">
-                        <span class="text-4xl mb-4 group-hover:scale-110 transition-transform">📝</span>
-                        <p class="text-xl font-black italic uppercase leading-none">Nuevo Registro</p>
-                        <p class="text-[10px] font-bold opacity-60 mt-2 uppercase tracking-widest text-left">Agregar beneficiario al censo actual</p>
-                    </button>
-                    
-                    <div class="bg-white p-8 rounded-[2.5rem] border-2 border-dashed border-slate-200 flex flex-col justify-center items-center text-slate-400">
-                        <p class="text-[10px] font-black uppercase tracking-widest mb-2">Base de Datos</p>
-                        <p class="text-xs italic text-center">Software optimizado para dispositivos móviles y computadoras de escritorio.</p>
+        <main class="p-4 max-w-6xl mx-auto">
+            <div id="menu-panel" class="space-y-6">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+                    <div class="bg-white p-5 rounded-[2rem] border-b-4 border-blue-900 card-shadow text-center">
+                        <p class="text-[9px] font-black text-slate-400 uppercase">Total</p>
+                        <h3 id="st-t" class="text-3xl font-black">0</h3>
+                    </div>
+                    <div onclick="verLista('espera')" class="bg-yellow-50 p-5 rounded-[2rem] border-b-4 border-yellow-400 card-shadow text-center cursor-pointer active:scale-95 transition-all">
+                        <p class="text-[9px] font-black text-yellow-600 uppercase">Espera</p>
+                        <h3 id="st-e" class="text-3xl font-black text-yellow-700">0</h3>
+                    </div>
+                    <div onclick="verLista('aprobado')" class="bg-emerald-50 p-5 rounded-[2rem] border-b-4 border-emerald-500 card-shadow text-center cursor-pointer active:scale-95 transition-all">
+                        <p class="text-[9px] font-black text-emerald-600 uppercase">Aprobados</p>
+                        <h3 id="st-a" class="text-3xl font-black text-emerald-700">0</h3>
+                    </div>
+                    <div onclick="verLista('rechazado')" class="bg-red-50 p-5 rounded-[2rem] border-b-4 border-red-500 card-shadow text-center cursor-pointer active:scale-95 transition-all">
+                        <p class="text-[9px] font-black text-red-600 uppercase">Negados</p>
+                        <h3 id="st-r" class="text-3xl font-black text-red-700">0</h3>
                     </div>
                 </div>
+
+                <button onclick="verForm()" class="w-full bg-blue-900 text-white p-8 rounded-[2.5rem] shadow-2xl flex justify-between items-center group active:scale-95 transition-all">
+                    <div class="text-left">
+                        <h2 class="text-2xl font-black italic uppercase leading-none">Nuevo Registro</h2>
+                        <p class="text-[10px] font-bold opacity-50 mt-2 uppercase tracking-widest">Censo Independencia 2026</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-full text-2xl group-hover:rotate-90 transition-transform">➕</div>
+                </button>
             </div>
 
             <div id="form-panel" class="hidden py-4 max-w-2xl mx-auto">
-                <div class="flex items-center justify-between mb-6">
-                    <button onclick="verMenu()" class="text-blue-900 font-black text-xs uppercase flex items-center gap-2"><span>⬅️</span> Menú</button>
-                    <span class="text-[10px] font-black text-slate-300 uppercase italic">Formulario de Captura v10</span>
-                </div>
-                <div class="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl border border-slate-100">
-                    <h2 class="text-2xl font-black text-blue-950 mb-8 border-l-8 border-blue-900 pl-4 uppercase italic">Datos Solicitante</h2>
-                    <form onsubmit="guardarRegistro(event)" class="space-y-5">
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Nombre y Apellido</label>
-                            <input type="text" id="in-n" required class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-blue-500 outline-none">
+                <button onclick="verMenu()" class="mb-6 text-blue-900 font-black text-xs uppercase flex items-center gap-2"><span>⬅️</span> Volver al Menú</button>
+                <div class="bg-white p-8 md:p-12 rounded-[3rem] card-shadow border">
+                    <h2 class="text-2xl font-black text-blue-950 mb-8 border-l-8 border-blue-900 pl-4 uppercase italic">Datos del Beneficiario</h2>
+                    <form onsubmit="registrarPersona(event)" class="grid md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Nombre Completo</label>
+                            <input type="text" id="i-n" required class="w-full p-4 bg-slate-50 border-2 rounded-2xl font-bold">
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div class="space-y-1">
-                                <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Cédula</label>
-                                <input type="number" id="in-c" required class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-blue-500 outline-none">
-                            </div>
-                            <div class="space-y-1">
-                                <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Teléfono Movil</label>
-                                <input type="text" id="in-t" required class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-blue-500 outline-none">
-                            </div>
+                        <div>
+                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Cédula de Identidad</label>
+                            <input type="number" id="i-c" required class="w-full p-4 bg-slate-50 border-2 rounded-2xl font-bold">
                         </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-black text-blue-600 uppercase ml-2">Ayuda Técnica / Social Requerida</label>
-                            <input type="text" id="in-a" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl font-bold focus:border-blue-500 outline-none">
+                        <div>
+                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Número de Teléfono</label>
+                            <input type="text" id="i-t" required class="w-full p-4 bg-slate-50 border-2 rounded-2xl font-bold">
                         </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Dirección de Habitación</label>
-                            <textarea id="in-d" required class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold h-28 focus:border-blue-500 outline-none resize-none"></textarea>
+                        <div class="md:col-span-2">
+                            <label class="text-[9px] font-black text-blue-600 uppercase ml-2 italic underline font-black">Tipo de Ayuda Necesaria</label>
+                            <input type="text" id="i-a" placeholder="Ej: Medicamentos, Silla de Ruedas, Vivienda..." class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl font-bold">
                         </div>
-                        <button type="submit" class="w-full bg-blue-900 text-white font-black py-5 rounded-[1.5rem] shadow-2xl uppercase tracking-widest text-sm hover:bg-blue-800 transition-all active:scale-95">Finalizar Registro ✅</button>
+                        <div class="md:col-span-2">
+                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Dirección de Residencia</label>
+                            <textarea id="i-d" required class="w-full p-4 bg-slate-50 border-2 rounded-2xl font-bold h-24 resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="md:col-span-2 bg-blue-900 text-white font-black py-5 rounded-3xl shadow-xl uppercase text-sm tracking-tighter mt-4 active:scale-95 transition-all">✅ Confirmar y Guardar Registro</button>
                     </form>
                 </div>
             </div>
 
-            <div id="list-panel" class="hidden py-4 h-full">
-                <div class="flex items-center justify-between mb-4">
-                    <button onclick="verMenu()" class="text-blue-900 font-black text-xs uppercase flex items-center gap-2"><span>⬅️</span> Menú</button>
-                    <div class="flex gap-2 text-[9px] font-black uppercase">
-                        <button onclick="filtrar('espera')" id="t-espera" class="p-2 px-4 rounded-xl border border-slate-200">Espera</button>
-                        <button onclick="filtrar('aprobado')" id="t-aprobado" class="p-2 px-4 rounded-xl border border-slate-200">Aprobados</button>
-                        <button onclick="filtrar('rechazado')" id="t-rechazado" class="p-2 px-4 rounded-xl border border-slate-200">Negados</button>
+            <div id="list-panel" class="hidden py-4">
+                <div class="flex justify-between items-center mb-6 overflow-x-auto pb-2 gap-2">
+                    <button onclick="verMenu()" class="text-blue-900 font-black text-[10px] uppercase whitespace-nowrap">⬅️ Menú</button>
+                    <div class="flex bg-slate-200 p-1 rounded-2xl gap-1">
+                        <button onclick="filtrar('espera')" id="btn-espera" class="p-2 px-4 text-[9px] font-black uppercase transition-all">Espera</button>
+                        <button onclick="filtrar('aprobado')" id="btn-aprobado" class="p-2 px-4 text-[9px] font-black uppercase transition-all">Aprobado</button>
+                        <button onclick="filtrar('rechazado')" id="btn-rechazado" class="p-2 px-4 text-[9px] font-black uppercase transition-all">Negado</button>
                     </div>
                 </div>
-                
-                <div class="bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100">
+                <div class="bg-white rounded-[2.5rem] card-shadow overflow-hidden border">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-[11px] min-w-[800px]">
+                        <table class="w-full text-left text-[11px] min-w-[700px]">
                             <thead class="bg-slate-50 text-slate-400 uppercase font-black italic border-b">
-                                <tr>
-                                    <th class="p-6">#</th>
-                                    <th>Beneficiario</th>
-                                    <th>Cédula</th>
-                                    <th>Teléfono</th>
-                                    <th>Ayuda</th>
-                                    <th class="text-center">Estatus Final</th>
-                                    <th class="text-center">Acción</th>
-                                </tr>
+                                <tr><th class="p-6">#</th><th>Beneficiario</th><th>Cédula</th><th>Teléfono</th><th>Ayuda</th><th class="text-center">Estatus Final</th><th class="text-center">Eliminar</th></tr>
                             </thead>
-                            <tbody id="tabla-body" class="font-bold text-slate-700"></tbody>
+                            <tbody id="tbody" class="font-bold"></tbody>
                         </table>
                     </div>
                 </div>
@@ -155,88 +149,134 @@
     </div>
 
     <script>
-        // LÓGICA DEL SISTEMA
-        let esModoLogin = true, dbUsers = JSON.parse(localStorage.getItem('siga_v10_u')) || [], dbData = JSON.parse(localStorage.getItem('siga_v10_d')) || [], sesion = null, filtro = 'espera';
+        // LÓGICA DE PERSISTENCIA Y SEGURIDAD
+        let mode = 'login', sesion = null, filtro = 'espera';
+        let dbU = JSON.parse(localStorage.getItem('SIGA_U')) || [];
+        let dbD = JSON.parse(localStorage.getItem('SIGA_D')) || [];
 
-        function alternarModo() { esModoLogin = !esModoLogin; document.getElementById('auth-title').innerHTML = esModoLogin ? "SIGA V10" : "Nuevo Perfil"; document.getElementById('reg-extra').classList.toggle('hidden'); document.getElementById('toggle-btn').innerText = esModoLogin ? "Registrar Nuevo Perfil" : "Ya tengo cuenta, entrar"; }
-
-        function procesarAcceso() {
-            const u = document.getElementById('user-id').value.trim().toLowerCase(), p = document.getElementById('user-pass').value.trim(), s = document.getElementById('sector-name').value.trim();
-            if (esModoLogin) {
-                const user = dbUsers.find(x => x.u === u && x.p === p);
-                if (user) { sesion = user; iniciarApp(); } else alert("❌ Usuario o Contraseña Inválida");
+        function toggleMode(m) {
+            mode = m;
+            document.getElementById('reg-fields').classList.add('hidden');
+            document.getElementById('recovery-fields').classList.add('hidden');
+            document.getElementById('standard-fields').classList.remove('hidden');
+            
+            if(m === 'reg') {
+                document.getElementById('auth-title').innerText = "Nuevo Perfil";
+                document.getElementById('reg-fields').classList.remove('hidden');
+                document.getElementById('btn-mode').innerText = "Ya tengo cuenta";
+                document.getElementById('btn-mode').onclick = () => toggleMode('login');
+            } else if(m === 'rec') {
+                document.getElementById('auth-title').innerText = "Recuperar";
+                document.getElementById('recovery-fields').classList.remove('hidden');
+                document.getElementById('standard-fields').classList.add('hidden');
+                document.getElementById('btn-mode').innerText = "Volver";
+                document.getElementById('btn-mode').onclick = () => toggleMode('login');
             } else {
-                if (u && p && s) {
-                    if(dbUsers.find(x => x.u === u)) return alert("El nombre de usuario ya está en uso");
-                    dbUsers.push({ u, p, s }); localStorage.setItem('siga_v10_u', JSON.stringify(dbUsers)); alert("✅ Sector registrado correctamente"); alternarModo();
-                } else alert("Por favor complete todos los campos");
+                document.getElementById('auth-title').innerHTML = 'SIGA <span class="text-blue-700">V11</span>';
+                document.getElementById('btn-mode').innerText = "Crear Cuenta";
+                document.getElementById('btn-mode').onclick = () => toggleMode('reg');
             }
         }
 
-        function iniciarApp() { document.getElementById('auth-section').classList.add('hidden'); document.getElementById('app-section').classList.remove('hidden'); document.getElementById('nav-info').innerText = sesion.s; verMenu(); }
-        function verMenu() { ocultarP(); document.getElementById('menu-panel').classList.remove('hidden'); stats(); }
-        function verForm() { ocultarP(); document.getElementById('form-panel').classList.remove('hidden'); }
-        function verLista(f) { ocultarP(); document.getElementById('list-panel').classList.remove('hidden'); filtrar(f); }
-        function ocultarP() { ['menu-panel', 'form-panel', 'list-panel'].forEach(id => document.getElementById(id).classList.add('hidden')); }
+        function handleAuth() {
+            const u = document.getElementById('user-id').value.trim().toLowerCase();
+            const p = document.getElementById('user-pass').value.trim();
+            const sector = document.getElementById('reg-sector').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const recP = document.getElementById('rec-phone-input').value.trim();
+
+            if(mode === 'reg') {
+                if(u && p && sector && phone) {
+                    if(dbU.find(x => x.u === u)) return alert("Usuario ya existe");
+                    dbU.push({ u, p, s: sector, t: phone });
+                    localStorage.setItem('SIGA_U', JSON.stringify(dbU));
+                    alert("✅ Registrado con éxito. Ahora ingresa.");
+                    toggleMode('login');
+                } else alert("Completa todos los campos");
+            } else if(mode === 'rec') {
+                const f = dbU.find(x => x.t === recP);
+                if(f) alert(`🔍 Usuario: ${f.u}\n🔑 Clave: ${f.p}`);
+                else alert("Teléfono no encontrado");
+            } else {
+                const user = dbU.find(x => x.u === u && x.p === p);
+                if(user) { sesion = user; start(); }
+                else alert("Datos incorrectos");
+            }
+        }
+
+        function start() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('app-section').classList.remove('hidden');
+            document.getElementById('nav-sector').innerText = sesion.s;
+            verMenu();
+        }
+
+        function verMenu() { ocultarTodo(); document.getElementById('menu-panel').classList.remove('hidden'); stats(); }
+        function verForm() { ocultarTodo(); document.getElementById('form-panel').classList.remove('hidden'); }
+        function verLista(f) { ocultarTodo(); document.getElementById('list-panel').classList.remove('hidden'); filtrar(f); }
+        function ocultarTodo() { ['menu-panel', 'form-panel', 'list-panel'].forEach(id => document.getElementById(id).classList.add('hidden')); }
 
         function stats() {
-            const m = dbData.filter(x => x.owner === sesion.u);
-            document.getElementById('stat-t').innerText = m.length;
-            document.getElementById('stat-e').innerText = m.filter(x => x.e === 'espera').length;
-            document.getElementById('stat-a').innerText = m.filter(x => x.e === 'aprobado').length;
-            document.getElementById('stat-r').innerText = m.filter(x => x.e === 'rechazado').length;
+            const m = dbD.filter(x => x.o === sesion.u);
+            document.getElementById('st-t').innerText = m.length;
+            document.getElementById('st-e').innerText = m.filter(x => x.e === 'espera').length;
+            document.getElementById('st-a').innerText = m.filter(x => x.e === 'aprobado').length;
+            document.getElementById('st-r').innerText = m.filter(x => x.e === 'rechazado').length;
         }
 
-        function guardarRegistro(e) {
+        function registrarPersona(e) {
             e.preventDefault();
-            dbData.unshift({ id: Date.now(), owner: sesion.u, n: document.getElementById('in-n').value.toUpperCase(), c: document.getElementById('in-c').value, t: document.getElementById('in-t').value, d: document.getElementById('in-d').value, a: document.getElementById('in-a').value || "General", e: 'espera' });
-            localStorage.setItem('siga_v10_d', JSON.stringify(dbData));
-            alert("✅ Registro guardado exitosamente"); e.target.reset(); verLista('espera');
+            dbD.unshift({ 
+                id: Date.now(), 
+                o: sesion.u, 
+                n: document.getElementById('i-n').value.toUpperCase(),
+                c: document.getElementById('i-c').value,
+                t: document.getElementById('i-t').value,
+                d: document.getElementById('i-d').value,
+                a: document.getElementById('i-a').value || "Ayuda General",
+                e: 'espera' 
+            });
+            localStorage.setItem('SIGA_D', JSON.stringify(dbD));
+            alert("✅ Registro blindado y guardado.");
+            e.target.reset();
+            verLista('espera');
         }
 
-        function establecerEstatus(id, nuevoE) {
-            if(!confirm("¿CONFIRMAR ESTATUS DEFINITIVO? Esta acción bloqueará el registro.")) return;
-            const i = dbData.findIndex(x => x.id === id);
-            dbData[i].e = nuevoE;
-            localStorage.setItem('siga_v10_d', JSON.stringify(dbData));
+        function setStatus(id, e) {
+            if(!confirm("¿CONFIRMAR ESTATUS FINAL? Ya no se podrá modificar.")) return;
+            const i = dbD.findIndex(x => x.id === id);
+            dbD[i].e = e;
+            localStorage.setItem('SIGA_D', JSON.stringify(dbD));
             filtrar(filtro);
         }
 
-        function eliminarRegistro(id) {
-            if(!confirm("⚠️ ¿ELIMINAR PERMANENTEMENTE?")) return;
-            dbData = dbData.filter(x => x.id !== id);
-            localStorage.setItem('siga_v10_d', JSON.stringify(dbData));
+        function deleteItem(id) {
+            if(!confirm("⚠️ ¿BORRAR PERMANENTEMENTE?")) return;
+            dbD = dbD.filter(x => x.id !== id);
+            localStorage.setItem('SIGA_D', JSON.stringify(dbD));
             filtrar(filtro);
         }
 
         function filtrar(s) {
             filtro = s;
-            ['espera', 'aprobado', 'rechazado'].forEach(x => {
-                document.getElementById('t-'+x).className = "p-2 px-4 rounded-xl border border-slate-200 transition-all";
-                if(x === s) document.getElementById('t-'+x).className += " bg-blue-900 text-white border-blue-900";
-            });
-            const tbody = document.getElementById('tabla-body'), filtrados = dbData.filter(x => x.owner === sesion.u && x.e === s);
-            
-            tbody.innerHTML = filtrados.map((r, i) => {
-                let statusUI = r.e === 'espera' ? 
-                    `<div class="flex gap-3 justify-center">
-                        <button onclick="establecerEstatus(${r.id}, 'aprobado')" title="Aprobar" class="w-6 h-6 rounded-full bg-green-500 border-4 border-white shadow-lg hover:scale-125 transition-transform"></button>
-                        <button onclick="establecerEstatus(${r.id}, 'rechazado')" title="Negar" class="w-6 h-6 rounded-full bg-red-600 border-4 border-white shadow-lg hover:scale-125 transition-transform"></button>
-                    </div>` : 
-                    `<div class="text-center"><span class="status-pill ${r.e === 'aprobado' ? 'bg-emerald-600' : 'bg-red-700'}">${r.e === 'aprobado' ? '✅ Aprobado' : '❌ Negado'}</span></div>`;
-
-                return `<tr class="border-b border-slate-50 hover:bg-blue-50/50 transition-colors animate-in slide-in-from-right duration-300">
-                    <td class="p-6 text-blue-900 italic font-black">${i + 1}</td>
-                    <td><p class="text-blue-950 font-black">${r.n}</p><p class="text-[8px] text-slate-400 font-normal truncate max-w-[150px] uppercase mt-0.5">${r.d}</p></td>
-                    <td>${r.c}</td><td class="text-blue-600 font-black">${r.t}</td>
-                    <td><span class="bg-blue-50 text-blue-800 px-2 py-1 rounded-lg text-[8px] uppercase border border-blue-100">${r.a}</span></td>
-                    <td class="p-4">${statusUI}</td>
-                    <td class="p-4 text-center">
-                        <button onclick="eliminarRegistro(${r.id})" class="text-slate-200 hover:text-red-500 transition-colors">🗑️</button>
-                    </td>
+            ['espera', 'aprobado', 'rechazado'].forEach(x => document.getElementById('btn-'+x).className = (x===s) ? "active-tab p-2 px-4 text-[9px] font-black uppercase" : "p-2 px-4 text-[9px] font-black uppercase text-slate-400");
+            const tb = document.getElementById('tbody'), f = dbD.filter(x => x.o === sesion.u && x.e === s);
+            tb.innerHTML = f.map((r, i) => {
+                let sUI = r.e === 'espera' ? `
+                    <div class="flex gap-4 justify-center">
+                        <button onclick="setStatus(${r.id}, 'aprobado')" class="w-7 h-7 bg-emerald-500 rounded-full border-4 border-white shadow-lg"></button>
+                        <button onclick="setStatus(${r.id}, 'rechazado')" class="w-7 h-7 bg-red-600 rounded-full border-4 border-white shadow-lg"></button>
+                    </div>` : `<div class="text-center"><span class="px-3 py-1 rounded-full text-[8px] text-white font-black ${r.e === 'aprobado' ? 'bg-emerald-600' : 'bg-red-700'}">${r.e.toUpperCase()}</span></div>`;
+                return `<tr class="border-b border-slate-100 hover:bg-blue-50/30 transition-all">
+                    <td class="p-6 text-blue-900 italic font-black">${i+1}</td>
+                    <td><p class="leading-none">${r.n}</p><p class="text-[7px] text-slate-400 font-normal uppercase mt-1 truncate max-w-[120px]">${r.d}</p></td>
+                    <td>${r.c}</td><td class="text-blue-600">${r.t}</td>
+                    <td><span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[8px]">${r.a}</span></td>
+                    <td class="p-4">${sUI}</td>
+                    <td class="p-4 text-center"><button onclick="deleteItem(${r.id})" class="text-slate-300 hover:text-red-500">🗑️</button></td>
                 </tr>`;
             }).join('');
-            if(!filtrados.length) tbody.innerHTML = `<tr><td colspan="7" class="p-20 text-center text-slate-300 italic font-black text-xs uppercase tracking-widest">Sin información registrada</td></tr>`;
+            if(!f.length) tb.innerHTML = `<tr><td colspan="7" class="p-20 text-center text-slate-300 italic font-black uppercase tracking-widest">Base de Datos Vacía</td></tr>`;
         }
     </script>
 </body>
