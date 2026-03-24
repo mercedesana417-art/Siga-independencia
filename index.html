@@ -10,56 +10,67 @@
 
     <nav class="bg-blue-900 text-white p-4 shadow-xl flex justify-between items-center">
         <h1 class="text-lg font-bold">SIGA-Independencia</h1>
-        <span class="text-xs bg-green-500 px-2 py-1 rounded-full uppercase">En Línea</span>
+        <span class="text-xs bg-green-500 px-2 py-1 rounded-full">SISTEMA ACTIVO</span>
     </nav>
 
-    <div class="p-6">
+    <div id="menuPrincipal" class="p-6">
         <div class="mb-8 text-center">
             <h2 class="text-2xl font-bold text-blue-900">Panel de Control</h2>
-            <p class="text-gray-500 text-sm">Gestión, Seguimiento y Control de Ayudas Sociales</p>
+            <p class="text-gray-500 text-sm italic">Gestión, Seguimiento y Control</p>
         </div>
 
         <div class="grid grid-cols-1 gap-4">
-            
-            <button onclick="alert('Abriendo Formulario de Registro...')" class="flex items-center p-4 bg-white border-l-4 border-blue-600 shadow-sm rounded-lg hover:bg-blue-50 transition">
-                <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">👤</div>
+            <button onclick="mostrarFormulario()" class="flex items-center p-4 bg-white border-l-4 border-blue-600 shadow-sm rounded-lg">
+                <div class="bg-blue-100 p-3 rounded-full mr-4">👤</div>
                 <div class="text-left">
-                    <p class="font-bold text-gray-800">Registro de Beneficiarios</p>
-                    <p class="text-xs text-gray-500">Censo y actualización de datos</p>
+                    <p class="font-bold">Registro de Beneficiarios</p>
+                    <p class="text-xs text-gray-500">Censo de ciudadanos</p>
                 </div>
             </button>
 
-            <button onclick="alert('Abriendo Módulo de Asignación...')" class="flex items-center p-4 bg-white border-l-4 border-green-600 shadow-sm rounded-lg hover:bg-green-50 transition">
-                <div class="bg-green-100 p-3 rounded-full mr-4 text-green-600">📦</div>
-                <div class="text-left">
-                    <p class="font-bold text-gray-800">Asignación de Ayudas</p>
-                    <p class="text-xs text-gray-500">Entrega de beneficios y programas</p>
-                </div>
+            <button onclick="alert('Módulo en construcción')" class="flex items-center p-4 bg-white border-l-4 border-green-600 shadow-sm rounded-lg opacity-60">
+                <div class="bg-green-100 p-3 rounded-full mr-4">📦</div>
+                <div class="text-left font-bold text-gray-400">Asignación de Ayudas</div>
             </button>
-
-            <button onclick="alert('Abriendo Módulo de Seguimiento...')" class="flex items-center p-4 bg-white border-l-4 border-yellow-600 shadow-sm rounded-lg hover:bg-yellow-50 transition">
-                <div class="bg-yellow-100 p-3 rounded-full mr-4 text-yellow-600">📋</div>
-                <div class="text-left">
-                    <p class="font-bold text-gray-800">Seguimiento y Control</p>
-                    <p class="text-xs text-gray-500">Monitoreo de entregas realizadas</p>
-                </div>
-            </button>
-
-            <button onclick="alert('Generando Reportes...')" class="flex items-center p-4 bg-white border-l-4 border-purple-600 shadow-sm rounded-lg hover:bg-purple-50 transition">
-                <div class="bg-purple-100 p-3 rounded-full mr-4 text-purple-600">📊</div>
-                <div class="text-left">
-                    <p class="font-bold text-gray-800">Reportes de Gestión</p>
-                    <p class="text-xs text-gray-500">Estadísticas e indicadores sociales</p>
-                </div>
-            </button>
-
-        </div>
-
-        <div class="mt-10 text-center border-t pt-4">
-            <p class="text-xs text-gray-400 italic">Gestión de Ayudas Sociales - San Felipe, Yaracuy</p>
         </div>
     </div>
 
+    <div id="formularioRegistro" class="hidden p-6">
+        <button onclick="mostrarMenu()" class="mb-4 text-blue-600 font-bold text-sm">← Volver al Menú</button>
+        
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <h2 class="text-xl font-bold text-blue-900 mb-4 border-b pb-2">Nuevo Registro</h2>
+            
+            <label class="block text-xs font-bold text-gray-600 mb-1">NOMBRE COMPLETO:</label>
+            <input type="text" class="w-full p-2 mb-4 bg-gray-50 border rounded text-sm" placeholder="Ej: Maria Perez">
+
+            <label class="block text-xs font-bold text-gray-600 mb-1">CÉDULA:</label>
+            <input type="number" class="w-full p-2 mb-4 bg-gray-50 border rounded text-sm" placeholder="V-00.000.000">
+
+            <label class="block text-xs font-bold text-gray-600 mb-1">TIPO DE AYUDA:</label>
+            <select class="w-full p-2 mb-6 bg-gray-50 border rounded text-sm">
+                <option>Salud / Medicinas</option>
+                <option>Alimentación</option>
+                <option>Ayuda Técnica (Silla de ruedas, etc)</option>
+                <option>Vivienda</option>
+            </select>
+
+            <button onclick="alert('¡Datos Guardados Exitosamente en la Base de Datos!')" class="w-full bg-blue-900 text-white font-bold py-3 rounded-lg shadow-md active:bg-blue-700">
+                GUARDAR REGISTRO
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function mostrarFormulario() {
+            document.getElementById('menuPrincipal').classList.add('hidden');
+            document.getElementById('formularioRegistro').classList.remove('hidden');
+        }
+        function mostrarMenu() {
+            document.getElementById('formularioRegistro').classList.add('hidden');
+            document.getElementById('menuPrincipal').classList.remove('hidden');
+        }
+    </script>
+
 </body>
 </html>
-
