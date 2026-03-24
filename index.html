@@ -3,162 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGA-Independencia | Gestión Social</title>
+    <title>SIGA | Control de Estatus Social</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 font-sans">
+<body class="bg-slate-900 font-sans text-slate-900 overflow-x-hidden transition-colors duration-700">
 
-    <nav class="bg-blue-900 text-white p-4 shadow-2xl sticky top-0 z-50 flex justify-between items-center">
-        <div>
-            <h1 class="text-xl font-black tracking-tighter">SIGA</h1>
-            <p class="text-[10px] uppercase tracking-widest text-blue-300">Independencia - Salud</p>
-        </div>
-        <div class="flex items-center gap-2">
-            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span class="text-xs font-bold">SISTEMA OPERATIVO</span>
-        </div>
-    </nav>
-
-    <div id="main-panel" class="max-w-md mx-auto p-4">
-        
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-b-4 border-blue-500">
-                <p class="text-gray-500 text-xs font-bold uppercase">Atendidos</p>
-                <h3 class="text-2xl font-black text-blue-900" id="count-atendidos">124</h3>
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-sm p-8 rounded-[2.5rem] shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="bg-blue-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-3xl">🔐</div>
+                <h2 class="text-2xl font-black text-blue-900">SIGA-V3</h2>
+                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1">Acceso Administrativo</p>
             </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border-b-4 border-green-500">
-                <p class="text-gray-500 text-xs font-bold uppercase">Ayudas</p>
-                <h3 class="text-2xl font-black text-green-600">98%</h3>
+            <div class="space-y-4">
+                <div id="field-nombre" class="hidden">
+                    <label class="text-[10px] font-black text-blue-600 uppercase ml-2">Nombre del Sector</label>
+                    <input type="text" id="reg-nombre" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500" placeholder="Ej: Salud San Felipe">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Usuario</label>
+                    <input type="text" id="auth-user" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500" placeholder="Usuario">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase ml-2">Contraseña</label>
+                    <input type="password" id="auth-pass" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500" placeholder="••••••••">
+                </div>
+                <button onclick="handleAuth()" id="btn-auth" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl shadow-xl active:scale-95 transition-all uppercase text-[10px] tracking-widest mt-4">Entrar al Sistema</button>
             </div>
-        </div>
-
-        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <span>🚀</span> Módulos de Gestión
-        </h2>
-
-        <div class="space-y-3">
-            <button onclick="switchTab('registro')" class="w-full flex items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-200 active:scale-95 transition-all">
-                <div class="bg-blue-100 p-3 rounded-xl mr-4 text-xl">✍️</div>
-                <div class="text-left">
-                    <p class="font-bold text-slate-800">Censo de Beneficiarios</p>
-                    <p class="text-xs text-slate-500">Formación y registro inicial</p>
-                </div>
-            </button>
-
-            <button onclick="switchTab('lista')" class="w-full flex items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-200 active:scale-95 transition-all">
-                <div class="bg-purple-100 p-3 rounded-xl mr-4 text-xl">📋</div>
-                <div class="text-left">
-                    <p class="font-bold text-slate-800">Seguimiento y Control</p>
-                    <p class="text-xs text-slate-500">Ver listado de casos registrados</p>
-                </div>
-            </button>
-
-            <button onclick="alert('Generando Reporte PDF para la Alcaldía...')" class="w-full flex items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-200 active:scale-95 transition-all">
-                <div class="bg-orange-100 p-3 rounded-xl mr-4 text-xl">📊</div>
-                <div class="text-left">
-                    <p class="font-bold text-slate-800">Reportes de Impacto</p>
-                    <p class="text-xs text-slate-500">Estadísticas de gestión social</p>
-                </div>
-            </button>
+            <div class="mt-6 text-center">
+                <button onclick="toggleAuthMode()" id="toggle-btn" class="text-blue-700 font-black text-[10px] uppercase underline italic">Crear Perfil de Sector</button>
+            </div>
         </div>
     </div>
 
-    <div id="registro-panel" class="hidden max-w-md mx-auto p-4">
-        <button onclick="switchTab('main')" class="mb-4 text-blue-700 font-bold flex items-center gap-1">
-            <span class="text-xl">‹</span> Volver al Panel
-        </button>
-        
-        <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
-            <h2 class="text-xl font-black text-blue-900 mb-6">Nuevo Registro</h2>
-            
-            <form id="formBeneficiario" onsubmit="saveData(event)" class="space-y-4">
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Nombre del Beneficiario</label>
-                    <input type="text" id="nombre" required class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-blue-500 outline-none transition-all" placeholder="Ej: María Rodríguez">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Cédula de Identidad</label>
-                    <input type="number" id="cedula" required class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-blue-500 outline-none transition-all" placeholder="V-00000000">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Tipo de Ayuda Social</label>
-                    <select id="ayuda" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-blue-500 outline-none transition-all">
-                        <option>🩺 Medicinas / Salud</option>
-                        <option>🍎 Alimentación (CLAP)</option>
-                        <option>♿ Ayuda Técnica</option>
-                        <option>🏠 Vivienda</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl shadow-lg hover:bg-blue-800 active:scale-95 transition-all mt-4">
-                    GUARDAR EN SISTEMA
+    <div id="app-content" class="hidden min-h-screen bg-slate-100">
+        <nav class="bg-blue-900 text-white p-4 shadow-xl flex justify-between items-center sticky top-0 z-50">
+            <div>
+                <h1 class="text-xl font-black italic leading-none">SIGA</h1>
+                <p class="text-[8px] uppercase tracking-widest text-blue-300 font-bold" id="user-display">---</p>
+            </div>
+            <button onclick="location.reload()" class="bg-red-500/20 px-3 py-1 rounded-lg text-[10px] font-black border border-red-500/50 uppercase">Salir</button>
+        </nav>
+
+        <div id="main-panel" class="max-w-md mx-auto p-4">
+            <div class="bg-gradient-to-br from-blue-700 to-blue-900 rounded-[2.5rem] p-7 mb-6 text-white shadow-xl relative overflow-hidden">
+                <h2 class="text-2xl font-black" id="welcome-name">---</h2>
+                <p class="text-[10px] font-bold uppercase opacity-70 mt-1 italic tracking-wider">Gestión de Ayudas Sociales</p>
+                <div class="absolute -right-4 -bottom-4 text-8xl opacity-10">📋</div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="switchTab('registro')" class="flex items-center p-5 bg-white rounded-[2.5rem] shadow-sm active:scale-95 transition-all">
+                    <div class="bg-blue-100 p-4 rounded-2xl mr-4 text-2xl shadow-inner">📝</div>
+                    <div class="text-left"><p class="font-black text-slate-800 uppercase text-xs">Censo Social</p><p class="text-[9px] text-slate-400 font-bold uppercase">Registrar Casos</p></div>
                 </button>
-            </form>
+                <button onclick="switchTab('lista')" class="flex items-center p-5 bg-white rounded-[2.5rem] shadow-sm active:scale-95 transition-all">
+                    <div class="bg-emerald-100 p-4 rounded-2xl mr-4 text-2xl shadow-inner">🔍</div>
+                    <div class="text-left"><p class="font-black text-slate-800 uppercase text-xs">Seguimiento y Control</p><p class="text-[9px] text-slate-400 font-bold uppercase">Modificar Estatus</p></div>
+                </button>
+            </div>
         </div>
-    </div>
 
-    <div id="lista-panel" class="hidden max-w-md mx-auto p-4">
-        <button onclick="switchTab('main')" class="mb-4 text-blue-700 font-bold flex items-center gap-1">
-            <span class="text-xl">‹</span> Volver al Panel
-        </button>
-        
-        <h2 class="text-xl font-black text-slate-800 mb-4">Control de Casos</h2>
-        <div id="contenedor-lista" class="space-y-3">
-            <p class="text-center text-slate-400 py-10 italic">No hay registros nuevos hoy.</p>
+        <div id="registro-panel" class="hidden max-w-md mx-auto p-4 animate-slide">
+            <button onclick="switchTab('main')" class="mb-4 text-blue-900 font-black text-[10px] uppercase">← Volver</button>
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl">
+                <h2 class="text-xl font-black text-blue-900 mb-6">Nuevo Censo</h2>
+                <form onsubmit="saveData(event)" class="space-y-4">
+                    <input type="text" id="nombre-ben" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold text-sm" placeholder="Nombre completo">
+                    <input type="number" id="cedula-ben" required class="w-full p-4 bg-slate-50 border rounded-2xl font-bold text-sm" placeholder="Cédula">
+                    <input type="text" id="ayuda-ben" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl font-bold text-sm" placeholder="Tipo de ayuda solicitada">
+                    <button type="submit" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest mt-4">Guardar Registro</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="lista-panel" class="hidden max-w-md mx-auto p-4">
+            <button onclick="switchTab('main')" class="mb-4 text-blue-900 font-black text-[10px] uppercase">← Volver</button>
+            <h2 class="text-xl font-black mb-4 px-2 italic">Control de Estatus</h2>
+            <div id="contenedor-lista" class="space-y-4 pb-20"></div>
         </div>
     </div>
 
     <script>
-        let registros = [];
+        let isLoginMode = true;
+        let usuariosDB = JSON.parse(localStorage.getItem('usuarios_final_v3')) || [];
+        let registrosDB = JSON.parse(localStorage.getItem('registros_final_v3')) || [];
+        let currentUser = null;
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('field-nombre').classList.toggle('hidden');
+            document.getElementById('auth-title').innerText = isLoginMode ? "Iniciar Sesión" : "Crear Perfil";
+            document.getElementById('toggle-btn').innerText = isLoginMode ? "Crear Perfil de Sector" : "Ya tengo cuenta";
+        }
+
+        function handleAuth() {
+            const u = document.getElementById('auth-user').value;
+            const p = document.getElementById('auth-pass').value;
+            const n = document.getElementById('reg-nombre').value;
+            if (isLoginMode) {
+                const userFound = usuariosDB.find(user => user.username === u && user.password === p);
+                if (userFound) { currentUser = userFound; enterApp(); } else { alert("Datos incorrectos"); }
+            } else {
+                if(u && p && n) {
+                    usuariosDB.push({ username: u, password: p, name: n });
+                    localStorage.setItem('usuarios_final_v3', JSON.stringify(usuariosDB));
+                    alert("Cuenta creada."); toggleAuthMode();
+                }
+            }
+        }
+
+        function enterApp() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+            document.body.classList.replace('bg-slate-900', 'bg-slate-100');
+            document.getElementById('user-display').innerText = `Sector: ${currentUser.name}`;
+            document.getElementById('welcome-name').innerText = currentUser.name;
+        }
 
         function switchTab(tab) {
             document.getElementById('main-panel').classList.add('hidden');
             document.getElementById('registro-panel').classList.add('hidden');
             document.getElementById('lista-panel').classList.add('hidden');
-
             if(tab === 'main') document.getElementById('main-panel').classList.remove('hidden');
             if(tab === 'registro') document.getElementById('registro-panel').classList.remove('hidden');
-            if(tab === 'lista') {
-                document.getElementById('lista-panel').classList.remove('hidden');
-                renderLista();
-            }
+            if(tab === 'lista') { document.getElementById('lista-panel').classList.remove('hidden'); renderLista(); }
         }
 
         function saveData(e) {
             e.preventDefault();
             const nuevo = {
-                nombre: document.getElementById('nombre').value,
-                cedula: document.getElementById('cedula').value,
-                ayuda: document.getElementById('ayuda').value,
-                fecha: new Date().toLocaleDateString()
+                id: Date.now(),
+                sector: currentUser.username,
+                nombre: document.getElementById('nombre-ben').value,
+                cedula: document.getElementById('cedula-ben').value,
+                ayuda: document.getElementById('ayuda-ben').value || "General",
+                estatus: 'espera' // Default: Amarillo
             };
-            
-            registros.unshift(nuevo);
-            document.getElementById('formBeneficiario').reset();
-            alert("✅ Registro guardado con éxito en el servidor SIGA.");
-            switchTab('main');
-            document.getElementById('count-atendidos').innerText = 124 + registros.length;
+            registrosDB.unshift(nuevo);
+            localStorage.setItem('registros_final_v3', JSON.stringify(registrosDB));
+            alert("✅ Caso Registrado en Espera");
+            switchTab('lista');
+        }
+
+        function cambiarEstatus(id, nuevoEstatus) {
+            const index = registrosDB.findIndex(r => r.id === id);
+            registrosDB[index].estatus = nuevoEstatus;
+            localStorage.setItem('registros_final_v3', JSON.stringify(registrosDB));
+            renderLista();
         }
 
         function renderLista() {
             const lista = document.getElementById('contenedor-lista');
-            if(registros.length === 0) return;
+            const misRegistros = registrosDB.filter(r => r.sector === currentUser.username);
             
-            lista.innerHTML = registros.map(r => `
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-                    <div class="flex justify-between items-start">
+            if(misRegistros.length === 0) {
+                lista.innerHTML = `<div class="p-10 text-center border-2 border-dashed rounded-3xl text-slate-400 font-bold italic">Sin registros...</div>`;
+                return;
+            }
+
+            lista.innerHTML = misRegistros.map(r => {
+                let colorClass = r.estatus === 'espera' ? 'bg-yellow-400 border-yellow-600' : 
+                                 r.estatus === 'aprobado' ? 'bg-emerald-500 border-emerald-700' : 
+                                 'bg-red-500 border-red-700';
+                let textEstatus = r.estatus === 'espera' ? 'EN ESPERA' : 
+                                  r.estatus === 'aprobado' ? 'APROBADO' : 'NO APROBADO';
+
+                return `
+                <div class="bg-white p-5 rounded-[2rem] shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-start mb-4">
                         <div>
-                            <p class="font-black text-slate-800">${r.nombre}</p>
-                            <p class="text-xs text-slate-500">C.I: ${r.cedula}</p>
+                            <p class="font-black text-slate-800 text-sm uppercase">${r.nombre}</p>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">C.I: ${r.cedula}</p>
                         </div>
-                        <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded-lg font-bold uppercase">${r.fecha}</span>
+                        <span class="text-[8px] font-black text-white px-3 py-1 rounded-full shadow-sm ${colorClass}">${textEstatus}</span>
                     </div>
-                    <div class="mt-3 pt-3 border-t border-dashed flex justify-between items-center text-sm">
-                        <span class="text-slate-600 font-medium">${r.ayuda}</span>
-                        <span class="text-green-600 font-bold">● Entregado</span>
+                    
+                    <p class="text-[10px] font-black text-blue-900 bg-blue-50 px-3 py-2 rounded-xl inline-block mb-4 italic italic uppercase">Ayuda: ${r.ayuda}</p>
+                    
+                    <div class="grid grid-cols-3 gap-2 border-t pt-4">
+                        <button onclick="cambiarEstatus(${r.id}, 'espera')" class="bg-yellow-400/20 text-yellow-700 text-[8px] font-black py-2 rounded-lg border border-yellow-400/50">EN ESPERA</button>
+                        <button onclick="cambiarEstatus(${r.id}, 'aprobado')" class="bg-emerald-500/20 text-emerald-700 text-[8px] font-black py-2 rounded-lg border border-emerald-500/50 uppercase text-[7px]">Aprobar</button>
+                        <button onclick="cambiarEstatus(${r.id}, 'rechazado')" class="bg-red-500/20 text-red-700 text-[8px] font-black py-2 rounded-lg border border-red-500/50 uppercase text-[7px]">Rechazar</button>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
     </script>
+    <style> .animate-slide { animation: slide 0.4s ease-out; } @keyframes slide { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } } </style>
 </body>
 </html>
