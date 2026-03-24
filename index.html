@@ -3,204 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGA PRO | Control de Planillas Flexibles</title>
+    <title>SIGA | Gestión Social Independencia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .tab-active { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; font-weight: 900; }
-        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .animate-fadeIn { animation: fadeIn 0.3s ease-in; }
+        .tab-active { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; opacity: 1 !important; }
+        tr:nth-child(even) { background-color: #f8fafc; }
     </style>
 </head>
 <body class="bg-slate-900 font-sans text-slate-900 transition-all duration-500">
 
-    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-6">
-        <div class="bg-white w-full max-w-sm p-8 rounded-[2.5rem] shadow-2xl border border-blue-100">
-            <div class="text-center mb-6">
-                <div class="bg-blue-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg">🔐</div>
-                <h2 class="text-2xl font-black text-blue-900 tracking-tighter">SIGA V6</h2>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Acceso Administrativo Seguro</p>
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm p-8 rounded-[2rem] shadow-2xl">
+            <h2 class="text-2xl font-black text-blue-900 text-center mb-6">SIGA V6 PRO</h2>
+            <div class="space-y-3">
+                <div id="f-nom" class="hidden"><input type="text" id="reg-n" class="w-full p-3 bg-slate-50 border rounded-xl" placeholder="Nombre Sector"></div>
+                <input type="text" id="a-u" class="w-full p-3 bg-slate-50 border rounded-xl" placeholder="Usuario">
+                <input type="password" id="a-p" class="w-full p-3 bg-slate-50 border rounded-xl" placeholder="Clave">
+                <button onclick="hAuth()" class="w-full bg-blue-900 text-white font-bold py-3 rounded-xl uppercase text-xs">Entrar</button>
             </div>
-            <div class="space-y-4">
-                <input type="text" id="auth-user" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500 font-bold" placeholder="Usuario">
-                <input type="password" id="auth-pass" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-500" placeholder="Contraseña">
-                <button onclick="handleAuth()" class="w-full bg-blue-900 text-white font-black py-4 rounded-2xl shadow-xl active:scale-95 transition-all uppercase text-xs tracking-widest">Iniciar Sesión</button>
-            </div>
-            <button onclick="toggleReg()" id="reg-btn" class="w-full text-blue-700 font-bold text-[10px] uppercase mt-6 underline italic">¿Nuevo Administrador? Regístrate</button>
+            <button onclick="tAuth()" id="t-b" class="w-full text-blue-700 font-bold text-[10px] mt-4 underline italic uppercase">Crear Perfil Nuevo</button>
         </div>
     </div>
 
-    <div id="app-content" class="hidden min-h-screen bg-white">
-        <nav class="bg-blue-900 text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
-            <div class="leading-none text-left">
-                <h1 class="text-xl font-black italic">SIGA PRO</h1>
-                <p id="user-display" class="text-[9px] font-black opacity-70 uppercase tracking-widest"></p>
-            </div>
-            <button onclick="location.reload()" class="text-[10px] font-black bg-red-600 px-3 py-1 rounded-lg border border-red-400">SALIR</button>
+    <div id="app" class="hidden min-h-screen bg-white">
+        <nav class="bg-blue-900 text-white p-4 flex justify-between items-center shadow-lg">
+            <h1 class="font-black italic">SIGA PRO</h1>
+            <button onclick="location.reload()" class="text-[10px] bg-red-600 px-3 py-1 rounded-lg font-bold">SALIR</button>
         </nav>
 
-        <div id="main-panel" class="p-4 max-w-6xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 mt-4">
-                <div class="bg-blue-50 p-4 rounded-2xl border-b-4 border-blue-900 text-center">
-                    <p class="text-[9px] font-black text-blue-900 uppercase italic">Total Registros</p>
-                    <h3 id="stat-total" class="text-3xl font-black italic">0</h3>
-                </div>
-                <div onclick="switchTab('lista', 'espera')" class="bg-yellow-50 p-4 rounded-2xl border-b-4 border-yellow-500 text-center cursor-pointer hover:bg-yellow-100 transition-all">
-                    <p class="text-[9px] font-black text-yellow-700 uppercase italic">En Espera</p>
-                    <h3 id="stat-espera" class="text-3xl font-black italic">0</h3>
-                </div>
-                <div onclick="switchTab('lista', 'aprobado')" class="bg-emerald-50 p-4 rounded-2xl border-b-4 border-emerald-600 text-center cursor-pointer hover:bg-emerald-100 transition-all">
-                    <p class="text-[9px] font-black text-emerald-700 uppercase italic">Aprobados</p>
-                    <h3 id="stat-aprobado" class="text-3xl font-black italic">0</h3>
-                </div>
-                <div onclick="switchTab('lista', 'rechazado')" class="bg-red-50 p-4 rounded-2xl border-b-4 border-red-600 text-center cursor-pointer hover:bg-red-100 transition-all">
-                    <p class="text-[9px] font-black text-red-700 uppercase italic">No Aprobados</p>
-                    <h3 id="stat-rechazado" class="text-3xl font-black italic">0</h3>
-                </div>
+        <div id="p-main" class="p-4 max-w-4xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6 text-center">
+                <div class="bg-blue-50 p-3 rounded-xl border-b-4 border-blue-900"><p class="text-[9px] font-black uppercase">Censo</p><h3 id="s-t" class="text-xl font-bold">0</h3></div>
+                <div onclick="sTab('list','espera')" class="bg-yellow-50 p-3 rounded-xl border-b-4 border-yellow-400 cursor-pointer"><p class="text-[9px] font-black uppercase">Espera</p><h3 id="s-e" class="text-xl font-bold">0</h3></div>
+                <div onclick="sTab('list','aprobado')" class="bg-green-50 p-3 rounded-xl border-b-4 border-green-600 cursor-pointer"><p class="text-[9px] font-black uppercase">Aprobados</p><h3 id="s-a" class="text-xl font-bold">0</h3></div>
+                <div onclick="sTab('list','rechazado')" class="bg-red-50 p-3 rounded-xl border-b-4 border-red-600 cursor-pointer"><p class="text-[9px] font-black uppercase">Negados</p><h3 id="s-r" class="text-xl font-bold">0</h3></div>
             </div>
-
-            <button onclick="switchTab('registro')" class="w-full bg-blue-900 text-white font-black p-6 rounded-[2.5rem] shadow-2xl mb-8 flex justify-between items-center px-10 border-b-8 border-blue-950 active:scale-95 transition-all">
-                <span class="text-sm uppercase italic tracking-widest">Crear Nueva Planilla de Registro</span>
-                <span class="text-2xl">➕</span>
-            </button>
+            <button onclick="sTab('reg')" class="w-full bg-blue-900 text-white font-black p-5 rounded-2xl shadow-lg flex justify-between items-center"><span>NUEVO CENSO</span><span>➕</span></button>
         </div>
 
-        <div id="registro-panel" class="hidden p-6 max-w-2xl mx-auto animate-fadeIn">
-            <button onclick="switchTab('main')" class="mb-4 text-blue-900 font-black text-xs uppercase tracking-tighter">← Volver al Panel</button>
-            <div class="bg-slate-50 p-8 rounded-[3rem] border-2 border-slate-100 shadow-inner">
-                <h2 class="text-2xl font-black mb-6 italic text-blue-900 underline underline-offset-8">Formulario de Registro</h2>
-                <form onsubmit="saveData(event)" class="space-y-5">
-                    <div>
-                        <label class="text-[10px] font-black text-blue-700 uppercase ml-2 mb-1 block tracking-widest italic">Nombre de Planilla / Comunidad</label>
-                        <input type="text" id="r-planilla" required class="w-full p-4 border-2 border-blue-100 rounded-2xl font-bold text-sm outline-none focus:border-blue-900" placeholder="Ej: Planilla 001 - Sector Las Flores">
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="r-nombre" required class="p-4 border rounded-2xl font-bold text-sm" placeholder="Nombre y Apellido">
-                        <input type="number" id="r-cedula" required class="p-4 border rounded-2xl font-bold text-sm" placeholder="Cédula de Identidad">
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="tel" id="r-telefono" required class="p-4 border rounded-2xl font-bold text-sm" placeholder="Número de Teléfono">
-                        <input type="text" id="r-ayuda" class="p-4 border rounded-2xl font-bold text-sm" placeholder="Ayuda o Trámite Solicitado">
-                    </div>
-                    <textarea id="r-direccion" required class="w-full p-4 border rounded-2xl font-bold text-sm h-20" placeholder="Dirección detallada de habitación"></textarea>
-                    <button type="submit" class="w-full bg-blue-900 text-white font-black py-5 rounded-2xl uppercase shadow-xl tracking-widest mt-2 border-b-4 border-blue-950">Respaldar y Guardar Caso</button>
-                </form>
-            </div>
+        <div id="p-reg" class="hidden p-6 max-w-xl mx-auto">
+            <button onclick="sTab('main')" class="mb-4 text-blue-900 font-bold text-xs uppercase underline">← Menú</button>
+            <form onsubmit="sData(event)" class="space-y-3 bg-slate-50 p-6 rounded-3xl shadow-inner border">
+                <input type="text" id="rn" required class="w-full p-3 border rounded-xl" placeholder="Nombre completo">
+                <input type="number" id="rc" required class="w-full p-3 border rounded-xl" placeholder="Cédula">
+                <input type="tel" id="rt" required class="w-full p-3 border rounded-xl" placeholder="Teléfono">
+                <input type="text" id="ra" class="w-full p-3 border rounded-xl" placeholder="Ayuda solicitada">
+                <textarea id="rd" required class="w-full p-3 border rounded-xl h-20" placeholder="Dirección exacta"></textarea>
+                <button type="submit" class="w-full bg-blue-900 text-white font-bold py-4 rounded-xl uppercase">Guardar Registro</button>
+            </form>
         </div>
 
-        <div id="lista-panel" class="hidden p-4 max-w-7xl mx-auto animate-fadeIn">
-            <button onclick="switchTab('main')" class="mb-4 text-blue-900 font-black text-xs uppercase italic">← Regresar</button>
-            
-            <div class="flex gap-4 mb-4 border-b-2 border-slate-100 overflow-x-auto pb-2">
-                <button onclick="filterBy('espera')" id="btn-f-espera" class="pb-2 text-[10px] font-black uppercase px-4 transition-all opacity-40 italic">🟡 Por Procesar</button>
-                <button onclick="filterBy('aprobado')" id="btn-f-aprobado" class="pb-2 text-[10px] font-black uppercase px-4 transition-all opacity-40 italic">🟢 Aprobados</button>
-                <button onclick="filterBy('rechazado')" id="btn-f-rechazado" class="pb-2 text-[10px] font-black uppercase px-4 transition-all opacity-40 italic">🔴 Rechazados</button>
+        <div id="p-list" class="hidden p-4 max-w-6xl mx-auto">
+            <button onclick="sTab('main')" class="mb-4 text-blue-900 font-bold text-xs uppercase">← Menú</button>
+            <div class="flex gap-4 mb-4 border-b text-[10px] font-black uppercase overflow-x-auto">
+                <button onclick="fBy('espera')" id="bf-espera" class="pb-2 px-2 opacity-40">🟡 Espera</button>
+                <button onclick="fBy('aprobado')" id="bf-aprobado" class="pb-2 px-2 opacity-40">🟢 Aprobados</button>
+                <button onclick="fBy('rechazado')" id="bf-rechazado" class="pb-2 px-2 opacity-40">🔴 Negados</button>
             </div>
-
-            <div class="table-container bg-white rounded-3xl shadow-2xl border border-slate-200">
-                <table class="w-full text-left text-[11px] font-bold border-collapse">
-                    <thead class="bg-blue-900 text-white uppercase italic">
-                        <tr>
-                            <th class="p-4">#</th>
-                            <th class="p-4">Planilla / Lugar</th>
-                            <th class="p-4">Nombre Completo</th>
-                            <th class="p-4">C.I</th>
-                            <th class="p-4">Teléfono</th>
-                            <th class="p-4">Dirección</th>
-                            <th class="p-4 text-center">Estatus</th>
-                        </tr>
+            <div class="overflow-x-auto bg-white rounded-xl shadow-xl border">
+                <table class="w-full text-left text-[10px] border-collapse">
+                    <thead class="bg-slate-100 uppercase italic">
+                        <tr><th class="p-3">#</th><th>Nombre</th><th>CI</th><th>Teléfono</th><th>Dirección</th><th>Ayuda</th><th class="text-center">Estatus</th></tr>
                     </thead>
-                    <tbody id="excel-body" class="text-slate-700">
-                        </tbody>
+                    <tbody id="e-body" class="font-medium"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
     <script>
-        let isLoginMode = true;
-        let usuariosDB = JSON.parse(localStorage.getItem('siga_v6_u')) || [];
-        let registrosDB = JSON.parse(localStorage.getItem('siga_v6_r')) || [];
-        let currentUser = null;
-        let currentFilter = 'espera';
-
-        function toggleReg() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('reg-btn').innerText = isLoginMode ? "¿Nuevo Administrador? Regístrate" : "Ya tengo cuenta, entrar";
+        let isL = true, uDB = JSON.parse(localStorage.getItem('s_v6_u'))||[], rDB = JSON.parse(localStorage.getItem('s_v6_r'))||[], cU = null, cF = 'espera';
+        function tAuth(){ isL = !isL; document.getElementById('f-nom').classList.toggle('hidden'); document.getElementById('t-b').innerText = isL ? "Crear Perfil Nuevo" : "Ya tengo cuenta"; }
+        function hAuth(){
+            const u = document.getElementById('a-u').value.trim(), p = document.getElementById('a-p').value.trim(), n = document.getElementById('reg-n').value.trim();
+            if(isL){ const f = uDB.find(x => x.u === u && x.p === p); if(f){ cU = f; eApp(); } else alert("Error"); }
+            else { if(u&&p&&n){ uDB.push({u,p,name:n}); localStorage.setItem('s_v6_u', JSON.stringify(uDB)); alert("Creado"); tAuth(); } }
         }
-
-        function handleAuth() {
-            const u = document.getElementById('auth-user').value.trim();
-            const p = document.getElementById('auth-pass').value.trim();
-            if(!u || !p) return alert("Complete los campos");
-
-            if(isLoginMode) {
-                const found = usuariosDB.find(x => x.u === u && x.p === p);
-                if(found) { currentUser = found; enterApp(); } else alert("Acceso Denegado");
-            } else {
-                usuariosDB.push({ u, p });
-                localStorage.setItem('siga_v6_u', JSON.stringify(usuariosDB));
-                alert("Usuario registrado con éxito"); toggleReg();
-            }
+        function eApp(){ document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); document.body.className="bg-white"; uSt(); }
+        function sTab(t, f = 'espera'){ ['p-main','p-reg','p-list'].forEach(x => document.getElementById(x).classList.add('hidden')); document.getElementById('p-'+t).classList.remove('hidden'); if(t==='list') fBy(f); if(t==='main') uSt(); }
+        function uSt(){ const m = rDB.filter(r => r.s === cU.u); document.getElementById('s-t').innerText = m.length; document.getElementById('s-e').innerText = m.filter(r => r.e === 'espera').length; document.getElementById('s-a').innerText = m.filter(r => r.e === 'aprobado').length; document.getElementById('s-r').innerText = m.filter(r => r.e === 'rechazado').length; }
+        function sData(e){ e.preventDefault(); rDB.unshift({id:Date.now(),s:cU.u,n:document.getElementById('rn').value.toUpperCase(),c:document.getElementById('rc').value,t:document.getElementById('rt').value,d:document.getElementById('rd').value,a:document.getElementById('ra').value||"Gral",e:'espera'}); localStorage.setItem('s_v6_r', JSON.stringify(rDB)); alert("Guardado"); e.target.reset(); sTab('list','espera'); }
+        function cSt(id, s){ const i = rDB.findIndex(r => r.id === id); rDB[i].e = s; localStorage.setItem('s_v6_r', JSON.stringify(rDB)); fBy(cF); }
+        function fBy(s){ cF = s; ['espera','aprobado','rechazado'].forEach(x => document.getElementById('bf-'+x).className = "pb-2 px-2 opacity-40"); document.getElementById('bf-'+s).classList.add('tab-active'); const b = document.getElementById('e-body'), f = rDB.filter(r => r.s === cU.u && r.e === s);
+            b.innerHTML = f.map((r, i) => `<tr class="border-b"><td class="p-3 text-blue-900">${i+1}</td><td>${r.n}</td><td>${r.c}</td><td>${r.t}</td><td class="max-w-[100px] truncate">${r.d}</td><td>${r.a}</td><td class="flex gap-1 justify-center p-2"><button onclick="cSt(${r.id},'espera')" class="w-4 h-4 rounded-full bg-yellow-400"></button><button onclick="cSt(${r.id},'aprobado')" class="w-4 h-4 rounded-full bg-green-500"></button><button onclick="cSt(${r.id},'rechazado')" class="w-4 h-4 rounded-full bg-red-600"></button></td></tr>`).join('');
+            if(!f.length) b.innerHTML = `<tr><td colspan="7" class="p-10 text-center opacity-30 italic font-bold">Sin registros</td></tr>`;
         }
-
-        function enterApp() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('app-content').classList.remove('hidden');
-            document.body.classList.replace('bg-slate-900', 'bg-white');
-            document.getElementById('user-display').innerText = `ADMIN: ${currentUser.u}`;
-            updateStats();
-        }
-
-        function switchTab(tab, filter = 'espera') {
-            ['main', 'registro', 'lista'].forEach(t => document.getElementById(t + '-panel').classList.add('hidden'));
-            document.getElementById(tab + '-panel').classList.remove('hidden');
-            if(tab === 'lista') filterBy(filter);
-            if(tab === 'main') updateStats();
-            window.scrollTo(0,0);
-        }
-
-        function updateStats() {
-            const misReg = registrosDB.filter(r => r.admin === currentUser.u);
-            document.getElementById('stat-total').innerText = misReg.length;
-            document.getElementById('stat-espera').innerText = misReg.filter(r => r.estatus === 'espera').length;
-            document.getElementById('stat-aprobado').innerText = misReg.filter(r => r.estatus === 'aprobado').length;
-            document.getElementById('stat-rechazado').innerText = misReg.filter(r => r.estatus === 'rechazado').length;
-        }
-
-        function saveData(e) {
-            e.preventDefault();
-            const nuevo = {
-                id: Date.now(),
-                admin: currentUser.u,
-                planilla: document.getElementById('r-planilla').value,
-                nombre: document.getElementById('r-nombre').value,
-                cedula: document.getElementById('r-cedula').value,
-                telefono: document.getElementById('r-telefono').value,
-                direccion: document.getElementById('r-direccion').value,
-                ayuda: document.getElementById('r-ayuda').value || "General",
-                estatus: 'espera'
-            };
-            registrosDB.unshift(nuevo);
-            localStorage.setItem('siga_v6_r', JSON.stringify(registrosDB));
-            alert("✅ PLANILLA RESPALDADA");
-            e.target.reset();
-            switchTab('lista', 'espera');
-        }
-
-        function changeStatus(id, stat) {
-            const idx = registrosDB.findIndex(r => r.id === id);
-            registrosDB[idx].estatus = stat;
-            localStorage.setItem('siga_v6_r', JSON.stringify(registrosDB));
-            filterBy(currentFilter);
-        }
-
-        function filterBy(stat) {
-            currentFilter = stat;
-            ['espera', 'aprobado', 'rechazado'].forEach(s => document.getElementById('btn-f-'+s).classList.remove('tab-active', 'opacity-100'));
-            document.getElementById('btn-f-'+stat).classList.add('tab-active', 'opacity-100');
-            
-            const tbody = document.getElementById('excel-body');
-            const filtrados = registrosDB.filter(r => r.admin === currentUser.u && r.estatus === stat);
-            
-            tbody.innerHTML =
+    </script>
+</body>
+</html>
