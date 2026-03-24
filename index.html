@@ -3,18 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGA-Independencia</title>
+    <title>SIGA-Independencia | Gestión Social</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-    <nav class="bg-blue-900 text-white p-4 shadow-lg text-center">
-        <h1 class="text-xl font-bold">SIGA-Independencia | Salud</h1>
+<body class="bg-gray-50">
+
+    <nav class="bg-blue-900 text-white p-4 shadow-xl flex justify-between items-center">
+        <h1 class="text-lg font-bold">SIGA-Independencia</h1>
+        <span class="text-xs bg-green-500 px-2 py-1 rounded-full uppercase">En Línea</span>
     </nav>
-    <div class="p-10 text-center">
-        <div class="bg-white p-8 rounded-xl shadow-md inline-block">
-            <h2 class="text-2xl font-bold text-blue-900">Sistema Activo</h2>
-            <p class="text-gray-600">Prototipo para Gestión de Ayudas Sociales</p>
+
+    <div class="p-6">
+        <div class="mb-8 text-center">
+            <h2 class="text-2xl font-bold text-blue-900">Panel de Control</h2>
+            <p class="text-gray-500 text-sm">Gestión, Seguimiento y Control de Ayudas Sociales</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4">
+            
+            <button onclick="alert('Abriendo Formulario de Registro...')" class="flex items-center p-4 bg-white border-l-4 border-blue-600 shadow-sm rounded-lg hover:bg-blue-50 transition">
+                <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">👤</div>
+                <div class="text-left">
+                    <p class="font-bold text-gray-800">Registro de Beneficiarios</p>
+                    <p class="text-xs text-gray-500">Censo y actualización de datos</p>
+                </div>
+            </button>
+
+            <button onclick="alert('Abriendo Módulo de Asignación...')" class="flex items-center p-4 bg-white border-l-4 border-green-600 shadow-sm rounded-lg hover:bg-green-50 transition">
+                <div class="bg-green-100 p-3 rounded-full mr-4 text-green-600">📦</div>
+                <div class="text-left">
+                    <p class="font-bold text-gray-800">Asignación de Ayudas</p>
+                    <p class="text-xs text-gray-500">Entrega de beneficios y programas</p>
+                </div>
+            </button>
+
+            <button onclick="alert('Abriendo Módulo de Seguimiento...')" class="flex items-center p-4 bg-white border-l-4 border-yellow-600 shadow-sm rounded-lg hover:bg-yellow-50 transition">
+                <div class="bg-yellow-100 p-3 rounded-full mr-4 text-yellow-600">📋</div>
+                <div class="text-left">
+                    <p class="font-bold text-gray-800">Seguimiento y Control</p>
+                    <p class="text-xs text-gray-500">Monitoreo de entregas realizadas</p>
+                </div>
+            </button>
+
+            <button onclick="alert('Generando Reportes...')" class="flex items-center p-4 bg-white border-l-4 border-purple-600 shadow-sm rounded-lg hover:bg-purple-50 transition">
+                <div class="bg-purple-100 p-3 rounded-full mr-4 text-purple-600">📊</div>
+                <div class="text-left">
+                    <p class="font-bold text-gray-800">Reportes de Gestión</p>
+                    <p class="text-xs text-gray-500">Estadísticas e indicadores sociales</p>
+                </div>
+            </button>
+
+        </div>
+
+        <div class="mt-10 text-center border-t pt-4">
+            <p class="text-xs text-gray-400 italic">Gestión de Ayudas Sociales - San Felipe, Yaracuy</p>
         </div>
     </div>
+
 </body>
-</html> 
+</html>
+
